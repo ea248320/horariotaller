@@ -16,16 +16,16 @@ export function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <div className="text-xl font-bold text-indigo-600">PreuFlow</div>
+        <div className="text-xl font-bold text-primary">PreuFlow</div>
         <nav className="flex items-center gap-3">
-          <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
+          <Link to="/login" className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted">
             Iniciar sesión
           </Link>
           <Link
             to="/registro"
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90"
           >
             Prueba gratis 14 días
           </Link>
@@ -33,10 +33,10 @@ export function LandingPage() {
       </header>
 
       <section className="mx-auto max-w-6xl px-6 py-16 text-center">
-        <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl">
-          Los horarios de tu preu, taller o academia, <span className="text-indigo-600">sin choques ni Excel</span>
+        <h1 className="font-display mx-auto max-w-3xl text-4xl font-extrabold leading-tight text-foreground md:text-5xl">
+          Los horarios de tu preu, taller o academia, <span className="text-primary">sin choques ni Excel</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
+        <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
           PreuFlow impide que un profesor o una sala queden con horarios traslapados, maneja cupos y
           lista de espera con aviso automático, y lleva el registro de cuotas pagadas — todo en un
           panel simple para tu secretaría.
@@ -44,15 +44,15 @@ export function LandingPage() {
         <div className="mt-8">
           <Link
             to="/registro"
-            className="rounded-xl bg-indigo-600 px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-indigo-700"
+            className="rounded-xl bg-primary px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-primary/90"
           >
             Crear mi centro gratis
           </Link>
-          <p className="mt-2 text-sm text-slate-500">14 días de prueba · sin tarjeta</p>
+          <p className="mt-2 text-sm text-muted-foreground">14 días de prueba · sin tarjeta</p>
         </div>
       </section>
 
-      <section className="border-y border-slate-100 bg-slate-50 py-14">
+      <section className="border-y border-border/60 bg-muted/50 py-14">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-3">
           {[
             {
@@ -71,55 +71,55 @@ export function LandingPage() {
               icon: '💵',
             },
           ].map((f) => (
-            <div key={f.title} className="rounded-2xl bg-white p-6 shadow-sm">
+            <div key={f.title} className="rounded-2xl bg-card p-6 shadow-sm">
               <div className="text-3xl">{f.icon}</div>
-              <h3 className="mt-3 text-lg font-bold text-slate-900">{f.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{f.body}</p>
+              <h3 className="mt-3 text-lg font-bold text-foreground">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-16" id="planes">
-        <h2 className="text-center text-3xl font-bold text-slate-900">Planes simples, en pesos chilenos</h2>
+        <h2 className="font-display text-center text-3xl font-bold text-foreground">Planes simples, en pesos chilenos</h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {plans.map((plan) => (
             <div
               key={plan.id}
               className={`rounded-2xl border p-6 ${
-                plan.id === 'growth' ? 'border-indigo-500 shadow-lg' : 'border-slate-200'
+                plan.id === 'growth' ? 'border-primary shadow-lg' : 'border-border'
               }`}
             >
               {plan.id === 'growth' && (
-                <div className="mb-2 inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700">
+                <div className="mb-2 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
                   Más popular
                 </div>
               )}
-              <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
-              <div className="mt-2 text-3xl font-extrabold text-slate-900">
+              <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
+              <div className="mt-2 text-3xl font-extrabold text-foreground">
                 {clp.format(plan.priceClp)}
-                <span className="text-base font-medium text-slate-500">/mes</span>
+                <span className="text-base font-medium text-muted-foreground">/mes</span>
               </div>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                 {plan.features.map((f) => (
                   <li key={f}>✓ {f}</li>
                 ))}
               </ul>
               <Link
                 to="/registro"
-                className="mt-6 block rounded-lg bg-indigo-600 py-2 text-center font-semibold text-white hover:bg-indigo-700"
+                className="mt-6 block rounded-lg bg-primary py-2 text-center font-semibold text-white hover:bg-primary/90"
               >
                 Empezar prueba gratis
               </Link>
             </div>
           ))}
           {plans.length === 0 && (
-            <p className="col-span-3 text-center text-slate-500">Cargando planes…</p>
+            <p className="col-span-3 text-center text-muted-foreground">Cargando planes…</p>
           )}
         </div>
       </section>
 
-      <footer className="border-t border-slate-100 py-8 text-center text-sm text-slate-400">
+      <footer className="border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
         PreuFlow · Hecho para preuniversitarios, talleres y academias de Chile
       </footer>
     </div>

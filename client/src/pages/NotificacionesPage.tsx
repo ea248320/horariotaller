@@ -34,12 +34,12 @@ export function NotificacionesPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Avisos</h1>
+        <h1 className="font-display text-2xl font-bold text-foreground">Avisos</h1>
         {unread > 0 && (
           <button
             type="button"
             onClick={() => void markAll()}
-            className="text-sm font-medium text-brand hover:underline"
+            className="text-sm font-medium text-primary hover:underline"
           >
             Marcar todos como leídos
           </button>
@@ -54,19 +54,19 @@ export function NotificacionesPage() {
           <div
             key={n.id}
             className={`rounded-xl border p-4 ${
-              n.read ? 'border-slate-200 bg-white' : 'border-brand/30 bg-brand/5'
+              n.read ? 'border-border bg-card' : 'border-primary/30 bg-primary/5'
             }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <div className="font-semibold text-slate-900">
+                <div className="font-semibold text-foreground">
                   <span className="mr-1" aria-hidden>
                     {TYPE_ICON[n.type] ?? 'ℹ️'}
                   </span>
                   {n.title}
                 </div>
-                {n.body && <p className="mt-1 text-sm text-slate-600">{n.body}</p>}
-                <p className="mt-1 text-xs text-slate-400">
+                {n.body && <p className="mt-1 text-sm text-muted-foreground">{n.body}</p>}
+                <p className="mt-1 text-xs text-muted-foreground">
                   {new Date(n.createdAt).toLocaleString('es-CL')}
                 </p>
               </div>
@@ -74,7 +74,7 @@ export function NotificacionesPage() {
                 <button
                   type="button"
                   onClick={() => void markRead(n.id)}
-                  className="shrink-0 text-xs font-medium text-brand hover:underline"
+                  className="shrink-0 text-xs font-medium text-primary hover:underline"
                 >
                   Marcar leído
                 </button>
@@ -83,7 +83,7 @@ export function NotificacionesPage() {
           </div>
         ))}
         {items.length === 0 && (
-          <p className="rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+          <p className="rounded-xl border border-dashed border-input p-8 text-center text-sm text-muted-foreground">
             Sin avisos por ahora. Aquí aparecerán los cupos liberados y otros eventos.
           </p>
         )}

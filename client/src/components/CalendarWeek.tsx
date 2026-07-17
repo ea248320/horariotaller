@@ -31,13 +31,13 @@ export function CalendarWeek({ blocks }: { blocks: CalendarBlock[] }) {
   const gridHeight = (END_HOUR - START_HOUR) * HOUR_PX;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-border bg-card">
       <div className="min-w-[720px]">
         {/* Encabezado de días */}
-        <div className="grid border-b border-slate-200" style={{ gridTemplateColumns: `56px repeat(${days.length}, 1fr)` }}>
+        <div className="grid border-b border-border" style={{ gridTemplateColumns: `56px repeat(${days.length}, 1fr)` }}>
           <div />
           {days.map((d) => (
-            <div key={d} className="border-l border-slate-100 px-2 py-2 text-center text-sm font-semibold text-slate-700">
+            <div key={d} className="border-l border-border/60 px-2 py-2 text-center text-sm font-semibold text-foreground">
               {DAY_NAMES[d]}
             </div>
           ))}
@@ -49,7 +49,7 @@ export function CalendarWeek({ blocks }: { blocks: CalendarBlock[] }) {
             {hours.map((h) => (
               <div
                 key={h}
-                className="absolute right-1 -translate-y-1/2 text-xs text-slate-400"
+                className="absolute right-1 -translate-y-1/2 text-xs text-muted-foreground"
                 style={{ top: (h - START_HOUR) * HOUR_PX }}
               >
                 {h > START_HOUR ? `${String(h).padStart(2, '0')}:00` : ''}
@@ -57,11 +57,11 @@ export function CalendarWeek({ blocks }: { blocks: CalendarBlock[] }) {
             ))}
           </div>
           {days.map((day) => (
-            <div key={day} className="relative border-l border-slate-100" style={{ height: gridHeight }}>
+            <div key={day} className="relative border-l border-border/60" style={{ height: gridHeight }}>
               {hours.map((h) => (
                 <div
                   key={h}
-                  className="absolute inset-x-0 border-t border-slate-100"
+                  className="absolute inset-x-0 border-t border-border/60"
                   style={{ top: (h - START_HOUR) * HOUR_PX }}
                 />
               ))}
@@ -88,7 +88,7 @@ export function CalendarWeek({ blocks }: { blocks: CalendarBlock[] }) {
                       </div>
                       {b.teacherName && <div className="truncate">{b.teacherName}</div>}
                       {b.semester && (
-                        <span className="mt-0.5 inline-block rounded bg-white/70 px-1 font-medium">
+                        <span className="mt-0.5 inline-block rounded bg-card/70 px-1 font-medium">
                           {SEMESTER_LABEL[b.semester] ?? b.semester}
                         </span>
                       )}

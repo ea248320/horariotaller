@@ -36,50 +36,50 @@ export function ProfesoresPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Profesores</h1>
+      <h1 className="font-display text-2xl font-bold text-foreground">Profesores</h1>
       <div className="mt-4">
         <StaleDataBanner visible={stale} />
       </div>
 
-      <form onSubmit={create} className="mt-2 grid gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-5">
+      <form onSubmit={create} className="mt-2 grid gap-2 rounded-xl border border-border bg-card p-4 sm:grid-cols-5">
         <input
           required
           placeholder="Nombre *"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           placeholder="Asignatura"
           value={form.subject}
           onChange={(e) => setForm({ ...form, subject: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           type="email"
           placeholder="Correo"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           placeholder="Teléfono"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <button
           type="submit"
-          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
           Agregar
         </button>
       </form>
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Asignatura</th>
@@ -87,12 +87,12 @@ export function ProfesoresPage() {
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/60">
             {(data?.teachers ?? []).map((t) => (
               <tr key={t.id}>
-                <td className="px-4 py-3 font-medium text-slate-900">{t.name}</td>
-                <td className="px-4 py-3 text-slate-600">{t.subject ?? '—'}</td>
-                <td className="px-4 py-3 text-slate-600">
+                <td className="px-4 py-3 font-medium text-foreground">{t.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{t.subject ?? '—'}</td>
+                <td className="px-4 py-3 text-muted-foreground">
                   {[t.email, t.phone].filter(Boolean).join(' · ') || '—'}
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -108,7 +108,7 @@ export function ProfesoresPage() {
             ))}
             {(data?.teachers ?? []).length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
                   Aún no hay profesores.
                 </td>
               </tr>

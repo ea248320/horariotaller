@@ -37,16 +37,16 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-sm">
-        <Link to="/" className="text-lg font-bold text-indigo-600">
+    <div className="flex min-h-screen items-center justify-center bg-muted/50 px-4 py-10">
+      <div className="w-full max-w-lg rounded-2xl bg-card p-8 shadow-sm">
+        <Link to="/" className="text-lg font-bold text-primary">
           PreuFlow
         </Link>
-        <h1 className="mt-4 text-2xl font-bold text-slate-900">Crea tu centro</h1>
-        <p className="mt-1 text-sm text-slate-500">14 días de prueba gratis, sin tarjeta.</p>
+        <h1 className="mt-4 text-2xl font-bold text-foreground">Crea tu centro</h1>
+        <p className="mt-1 text-sm text-muted-foreground">14 días de prueba gratis, sin tarjeta.</p>
         <form onSubmit={submit} className="mt-6 space-y-4">
           <div>
-            <span className="text-sm font-medium text-slate-700">Tipo de negocio</span>
+            <span className="text-sm font-medium text-foreground">Tipo de negocio</span>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {TYPES.map((t) => (
                 <button
@@ -55,60 +55,60 @@ export function RegisterPage() {
                   onClick={() => setBusinessType(t.id)}
                   className={`rounded-xl border p-3 text-left transition ${
                     businessType === t.id
-                      ? 'border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500'
-                      : 'border-slate-200 hover:border-slate-300'
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                      : 'border-border hover:border-input'
                   }`}
                 >
                   <div className="text-xl">{t.icon}</div>
-                  <div className="text-sm font-semibold text-slate-900">{t.name}</div>
-                  <div className="text-xs text-slate-500">{t.desc}</div>
+                  <div className="text-sm font-semibold text-foreground">{t.name}</div>
+                  <div className="text-xs text-muted-foreground">{t.desc}</div>
                 </button>
               ))}
             </div>
           </div>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">Nombre del centro</span>
+            <span className="text-sm font-medium text-foreground">Nombre del centro</span>
             <input
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Preuniversitario Andes"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2"
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">Correo</span>
+            <span className="text-sm font-medium text-foreground">Correo</span>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2"
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">Contraseña (mínimo 8 caracteres)</span>
+            <span className="text-sm font-medium text-foreground">Contraseña (mínimo 8 caracteres)</span>
             <input
               type="password"
               required
               minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2"
             />
           </label>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button
             type="submit"
             disabled={sending}
-            className="w-full rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-primary py-2 font-semibold text-white hover:bg-primary/90 disabled:opacity-50"
           >
             {sending ? 'Creando…' : 'Crear centro'}
           </button>
         </form>
-        <p className="mt-4 text-sm text-slate-500">
+        <p className="mt-4 text-sm text-muted-foreground">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/login" className="font-semibold text-indigo-600">
+          <Link to="/login" className="font-semibold text-primary">
             Inicia sesión
           </Link>
         </p>

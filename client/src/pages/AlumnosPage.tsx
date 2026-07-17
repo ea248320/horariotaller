@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useAppSettings } from '../context/AppSettingsContext';
 import { useCachedData } from '../hooks/useCachedData';
 import { useRealtime } from '../hooks/useRealtime';
 import { StaleDataBanner } from '../components/StaleDataBanner';
@@ -16,11 +17,13 @@ export function AlumnosPage() {
     void courses.refresh();
   });
 
+  const { matchesSemester } = useAppSettings();
   const [form, setForm] = useState({ name: '', email: '', phone: '', guardianName: '' });
   const [error, setError] = useState<string | null>(null);
   const [enrollSelect, setEnrollSelect] = useState<Record<number, string>>({});
 
   const label = organization?.studentLabel ?? 'Alumno';
+  const isPreu = organization?.businessType === 'preuniversitario';
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,41 +88,41 @@ export function AlumnosPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">{label}s</h1>
+      <h1 className="font-display text-2xl font-bold text-foreground">{label}s</h1>
       <div className="mt-4">
         <StaleDataBanner visible={students.stale} />
       </div>
 
-      <form onSubmit={create} className="mt-2 grid gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-5">
+      <form onSubmit={create} className="mt-2 grid gap-2 rounded-xl border border-border bg-card p-4 sm:grid-cols-5">
         <input
           required
           placeholder="Nombre *"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           type="email"
           placeholder="Correo"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           placeholder="Teléfono"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <input
           placeholder="Apoderado"
           value={form.guardianName}
           onChange={(e) => setForm({ ...form, guardianName: e.target.value })}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
         <button
           type="submit"
-          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
           Agregar
         </button>
@@ -132,11 +135,11 @@ export function AlumnosPage() {
 
       <div className="mt-4 space-y-3">
         {(students.data?.students ?? []).map((s) => (
-          <div key={s.id} className="rounded-xl border border-slate-200 bg-white p-4">
+          <div key={s.id} className="rounded-xl border border-border bg-card p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <div className="font-semibold text-slate-900">{s.name}</div>
-                <div className="text-sm text-slate-500">
+                <div className="font-semibold text-foreground">{s.name}</div>
+                <div className="text-sm text-muted-foreground">
                   {[s.email, s.phone, s.guardianName ? `Apoderado: ${s.guardianName}` : null]
                     .filter(Boolean)
                     .join(' · ') || 'Sin datos de contacto'}
@@ -154,7 +157,7 @@ export function AlumnosPage() {
               {s.enrollments.map((en) => (
                 <span
                   key={en.enrollmentId}
-                  className="inline-flex items-center gap-2 rounded-lg bg-brand/10 px-3 py-1 text-sm text-brand"
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary"
                 >
                   {en.courseName}
                   <button
@@ -170,11 +173,12 @@ export function AlumnosPage() {
               <select
                 value={enrollSelect[s.id] ?? ''}
                 onChange={(e) => setEnrollSelect({ ...enrollSelect, [s.id]: e.target.value })}
-                className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
+                className="rounded-lg border border-input bg-card px-2 py-1 text-sm"
               >
                 <option value="">Inscribir en…</option>
                 {(courses.data?.courses ?? [])
                   .filter((c) => !s.enrollments.some((en) => en.courseId === c.id))
+                  .filter((c) => !isPreu || matchesSemester(c.semester))
                   .map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name} ({c.enrolledCount}/{c.capacity})
@@ -185,7 +189,7 @@ export function AlumnosPage() {
                 <button
                   type="button"
                   onClick={() => enroll(s)}
-                  className="rounded-lg border border-brand px-3 py-1 text-sm font-semibold text-brand hover:bg-brand/5"
+                  className="rounded-lg border border-primary px-3 py-1 text-sm font-semibold text-primary hover:bg-primary/5"
                 >
                   Inscribir
                 </button>
@@ -194,7 +198,7 @@ export function AlumnosPage() {
           </div>
         ))}
         {(students.data?.students ?? []).length === 0 && (
-          <p className="rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+          <p className="rounded-xl border border-dashed border-input p-8 text-center text-sm text-muted-foreground">
             Aún no hay {label.toLowerCase()}s.
           </p>
         )}

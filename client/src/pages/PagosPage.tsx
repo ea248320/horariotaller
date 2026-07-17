@@ -21,11 +21,11 @@ export function PagosPage() {
 
   if (organization && !organization.feesEnabled) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-        <h1 className="text-xl font-bold text-slate-900">El módulo de cuotas está desactivado</h1>
-        <p className="mt-2 text-sm text-slate-500">
+      <div className="rounded-xl border border-border bg-card p-8 text-center">
+        <h1 className="text-xl font-bold text-foreground">El módulo de cuotas está desactivado</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Puedes activarlo en{' '}
-          <Link to="/panel/configuracion" className="font-semibold text-brand underline">
+          <Link to="/panel/configuracion" className="font-semibold text-primary underline">
             Configuración
           </Link>
           .
@@ -39,33 +39,33 @@ export function PagosPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-900">Cuotas</h1>
+        <h1 className="font-display text-2xl font-bold text-foreground">Cuotas</h1>
         <input
           type="month"
           value={month}
           onChange={(e) => e.target.value && setMonth(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+          className="rounded-lg border border-input bg-card px-3 py-1.5 text-sm"
         />
       </div>
-      <p className="mt-1 text-sm text-slate-500">
+      <p className="mt-1 text-sm text-muted-foreground">
         {paid} de {records.length} al día este mes.
       </p>
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">{organization?.studentLabel}</th>
               <th className="px-4 py-3">Teléfono</th>
               <th className="px-4 py-3">Estado</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/60">
             {records.map((r) => (
               <tr key={r.studentId}>
-                <td className="px-4 py-3 font-medium text-slate-900">{r.name}</td>
-                <td className="px-4 py-3 text-slate-600">{r.phone ?? '—'}</td>
+                <td className="px-4 py-3 font-medium text-foreground">{r.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{r.phone ?? '—'}</td>
                 <td className="px-4 py-3">
                   <PaymentBadge
                     status={r.status}
@@ -78,7 +78,7 @@ export function PagosPage() {
             ))}
             {!loading && records.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
                   No hay {organization?.studentLabel.toLowerCase()}s registrados todavía.
                 </td>
               </tr>
