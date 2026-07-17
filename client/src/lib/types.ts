@@ -97,6 +97,91 @@ export interface WaitlistEntry {
   createdAt: string;
 }
 
+// ─── Módulos portados de Emilia ───
+
+export interface TaskItem {
+  id: number;
+  taskId: number;
+  text: string;
+  completed: boolean;
+}
+
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  assignedTo: string;
+  deadline: string;
+  priority: 'ALTA' | 'MEDIA' | 'BAJA';
+  status: 'PENDIENTE' | 'EN CURSO' | 'COMPLETADA';
+  createdAt: string;
+  items: TaskItem[];
+}
+
+export interface Note {
+  id: number;
+  autor: string;
+  titulo: string;
+  contenido: string;
+  color: 'amarillo' | 'rosa' | 'verde' | 'celeste';
+  pinned: boolean;
+  createdAt: string;
+}
+
+export interface Change {
+  id: number;
+  studentName: string;
+  subject: string;
+  teacherBefore: string;
+  teacherAfter: string;
+  leavesClass: string;
+  entersClass: string;
+  changeType: string;
+  changeReason: string;
+  transferDate: string;
+  createdAt: string;
+}
+
+export interface WorkshopStudent {
+  id: number;
+  studentId: number;
+  studentName: string;
+}
+
+export interface Workshop {
+  id: number;
+  name: string;
+  teacherId: number | null;
+  teacherName: string | null;
+  room: string | null;
+  workshopDate: string;
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  students: WorkshopStudent[];
+}
+
+export interface Counselor {
+  id: number;
+  name: string;
+  title: string;
+  active: boolean;
+}
+
+export interface Cita {
+  id: number;
+  counselorId: number;
+  counselorName: string;
+  studentName: string;
+  agendadoPor: string;
+  fecha: string;
+  horaInicio: string;
+  motivo: string;
+  estadoConfirma: 'pendiente' | 'confirmada' | 'no_confirma';
+  estadoAsiste: 'pendiente' | 'asiste' | 'no_asiste';
+  notaRapida: string;
+}
+
 export interface Plan {
   id: string;
   name: string;

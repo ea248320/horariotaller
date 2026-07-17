@@ -94,6 +94,92 @@ const statements = [
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS waitlist_course_student_idx
     ON waitlist_entries (course_id, student_id)`,
+  // ─── Módulos portados de Emilia ───
+  `CREATE TABLE IF NOT EXISTS tasks (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    assigned_to TEXT NOT NULL DEFAULT '',
+    deadline TEXT NOT NULL DEFAULT '',
+    priority TEXT NOT NULL DEFAULT 'MEDIA',
+    status TEXT NOT NULL DEFAULT 'PENDIENTE',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS task_items (
+    id SERIAL PRIMARY KEY,
+    task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    text TEXT NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    sort_order INTEGER NOT NULL DEFAULT 0
+  )`,
+  `CREATE TABLE IF NOT EXISTS notas (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    autor TEXT NOT NULL DEFAULT '',
+    titulo TEXT NOT NULL DEFAULT '',
+    contenido TEXT NOT NULL DEFAULT '',
+    color TEXT NOT NULL DEFAULT 'amarillo',
+    pinned BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS cambios (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    student_name TEXT NOT NULL,
+    subject TEXT NOT NULL DEFAULT '',
+    teacher_before TEXT NOT NULL DEFAULT '',
+    teacher_after TEXT NOT NULL DEFAULT '',
+    leaves_class TEXT NOT NULL DEFAULT '',
+    enters_class TEXT NOT NULL DEFAULT '',
+    change_type TEXT NOT NULL DEFAULT 'CAMBIO HORARIO',
+    change_reason TEXT NOT NULL DEFAULT '',
+    transfer_date TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS workshops (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    teacher_id INTEGER REFERENCES teachers(id) ON DELETE SET NULL,
+    room TEXT,
+    workshop_date TEXT NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    capacity INTEGER NOT NULL DEFAULT 8,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS workshop_students (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    workshop_id INTEGER NOT NULL REFERENCES workshops(id) ON DELETE CASCADE,
+    student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS workshop_students_idx
+    ON workshop_students (workshop_id, student_id)`,
+  `CREATE TABLE IF NOT EXISTS orientadoras (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    title TEXT NOT NULL DEFAULT 'Orientadora',
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS citas_orientacion (
+    id SERIAL PRIMARY KEY,
+    org_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    counselor_id INTEGER NOT NULL REFERENCES orientadoras(id) ON DELETE CASCADE,
+    student_name TEXT NOT NULL,
+    agendado_por TEXT NOT NULL DEFAULT '',
+    fecha TEXT NOT NULL,
+    hora_inicio TEXT NOT NULL,
+    motivo TEXT NOT NULL DEFAULT '',
+    estado_confirma TEXT NOT NULL DEFAULT 'pendiente',
+    estado_asiste TEXT NOT NULL DEFAULT 'pendiente',
+    nota_rapida TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   // Migraciones aditivas para instalaciones existentes:
   `ALTER TABLE organizations ADD COLUMN IF NOT EXISTS subscription_active BOOLEAN NOT NULL DEFAULT FALSE`,
   `ALTER TABLE courses ADD COLUMN IF NOT EXISTS semester TEXT`,

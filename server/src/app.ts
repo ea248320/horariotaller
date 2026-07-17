@@ -11,6 +11,11 @@ import { paymentsRouter } from './routes/payments';
 import { notificationsRouter } from './routes/notifications';
 import { billingRouter } from './routes/billing';
 import { waitlistRouter } from './routes/waitlist';
+import { tasksRouter } from './routes/tasks';
+import { notesRouter } from './routes/notes';
+import { changesRouter } from './routes/changes';
+import { workshopsRouter } from './routes/workshops';
+import { counselingRouter } from './routes/counseling';
 
 export function createApp(): express.Express {
   const app = express();
@@ -36,6 +41,11 @@ export function createApp(): express.Express {
   app.use('/api/payments', ...protectedData, paymentsRouter);
   app.use('/api/notifications', ...protectedData, notificationsRouter);
   app.use('/api/waitlist', ...protectedData, waitlistRouter);
+  app.use('/api/tasks', ...protectedData, tasksRouter);
+  app.use('/api/notes', ...protectedData, notesRouter);
+  app.use('/api/changes', ...protectedData, changesRouter);
+  app.use('/api/workshops', ...protectedData, workshopsRouter);
+  app.use('/api/counseling', ...protectedData, counselingRouter);
 
   // Errores no manejados → 500 con mensaje genérico (el detalle va al log).
   app.use(

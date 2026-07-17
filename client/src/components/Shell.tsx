@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
+  ArrowLeftRight,
   Bell,
   CalendarDays,
+  CalendarPlus,
+  Camera,
+  ClipboardList,
   GraduationCap,
   Grid3x3,
+  HeartHandshake,
   Home,
   LogOut,
   Menu,
   Moon,
   Settings,
+  StickyNote,
   Sun,
   Users,
   Wallet,
@@ -84,11 +90,17 @@ export function Shell() {
     { to: '/panel/alumnos', label: `${organization.studentLabel}s`, icon: GraduationCap },
     { to: '/panel/profesores', label: 'Profesores', icon: Users },
     ...(organization.feesEnabled ? [{ to: '/panel/pagos', label: 'Cuotas', icon: Wallet }] : []),
+    { to: '/panel/tareas', label: 'Tareas', icon: ClipboardList },
+    { to: '/panel/cambios', label: 'Cambios', icon: ArrowLeftRight },
+    { to: '/panel/notas', label: 'Notas', icon: StickyNote },
+    { to: '/panel/talleres', label: 'Talleres', icon: CalendarPlus },
+    { to: '/panel/orientacion', label: 'Orientación', icon: HeartHandshake },
+    { to: '/panel/foto', label: 'Fotos', icon: Camera },
     { to: '/panel/configuracion', label: 'Admin', icon: Settings },
   ];
 
   const pillClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+    `flex shrink-0 items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
       isActive
         ? 'bg-primary/10 text-primary'
         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -144,8 +156,8 @@ export function Shell() {
             </NavLink>
 
             {/* Nav desktop */}
-            <div className="hidden items-center gap-2 md:flex">
-              <nav className="flex items-center gap-1">
+            <div className="hidden min-w-0 items-center gap-2 md:flex">
+              <nav className="flex items-center gap-1 overflow-x-auto">
                 {items.map((item) => (
                   <NavLink key={item.to} to={item.to} end={'end' in item && item.end} className={pillClass}>
                     <item.icon className="h-4 w-4" />

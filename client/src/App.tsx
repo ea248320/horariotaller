@@ -12,6 +12,12 @@ import { ProfesoresPage } from './pages/ProfesoresPage';
 import { PagosPage } from './pages/PagosPage';
 import { NotificacionesPage } from './pages/NotificacionesPage';
 import { ConfiguracionPage } from './pages/ConfiguracionPage';
+import { TareasPage } from './pages/TareasPage';
+import { NotasPage } from './pages/NotasPage';
+import { CambiosPage } from './pages/CambiosPage';
+import { TalleresPage } from './pages/TalleresPage';
+import { OrientacionPage } from './pages/OrientacionPage';
+import { FotoPage } from './pages/FotoPage';
 
 export default function App() {
   return (
@@ -38,6 +44,12 @@ export default function App() {
         <Route path="pagos" element={<PagosPage />} />
         <Route path="notificaciones" element={<NotificacionesPage />} />
         <Route path="configuracion" element={<ConfiguracionPage />} />
+        <Route path="tareas" element={<TareasPage />} />
+        <Route path="notas" element={<NotasPage />} />
+        <Route path="cambios" element={<CambiosPage />} />
+        <Route path="talleres" element={<TalleresPage />} />
+        <Route path="orientacion" element={<OrientacionPage />} />
+        <Route path="foto" element={<FotoPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
