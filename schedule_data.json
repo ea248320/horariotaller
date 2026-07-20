@@ -1,0 +1,3063 @@
+[
+  {
+    "day": "LUNES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 LUN 10.30 JR",
+    "students": [
+      "Agustín Llanquihuen",
+      "Consuelo Martinez",
+      "Cristobal Muñoz",
+      "Florencia Bastias",
+      "Joseph Vergara",
+      "Martina Bello"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "FIS INT LUN 10.30 DE",
+    "students": [
+      "Agustina Pérez",
+      "Aileen Lagos",
+      "Barbara Peña",
+      "Isidora Pereda",
+      "Paula Canales",
+      "Antonio Xi"
+    ],
+    "teacher": "DE",
+    "course": "FIS INT"
+  },
+  {
+    "day": "LUNES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "BIO INT LUN 10.30 AV",
+    "students": [
+      "Florencia Pooley",
+      "Francisca Leal",
+      "Francisca Torrejón",
+      "Maitte Jofre",
+      "María Estrada",
+      "Martina Sanchez",
+      "Rafael Briceño"
+    ],
+    "teacher": "AV",
+    "course": "BIO INT"
+  },
+  {
+    "day": "LUNES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 LUN 10.30 PF",
+    "students": [
+      "Laura Dungan",
+      "Catalina Pritzke",
+      "Fernanda Barra",
+      "Lucas Muñoz",
+      "Josefina Ewert",
+      "Joaquin Barragan"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "FIS INT LUN 10.30 SF",
+    "students": [
+      "Emilia Martínez",
+      "Emilio Del",
+      "Francisca Peña",
+      "Maria Cabezas",
+      "Sofia Barnechea",
+      "Valentina Araneda",
+      "Valentina Lincolao"
+    ],
+    "teacher": "SF",
+    "course": "FIS INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 INT MAR 10.30 PF",
+    "students": [
+      "Agustina Morales",
+      "Francisca Torrejón",
+      "Martina Sanchez",
+      "Matilde Yañez",
+      "Mia Vasconez",
+      "Vicente Caballero",
+      "Sofia Gomez"
+    ],
+    "teacher": "PF",
+    "course": "M1 INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "FIS MAR 10.30 DE",
+    "students": [
+      "Alvaro Colomera",
+      "Ignacia Hernandez",
+      "Javiera Ricke",
+      "Matilda Juarez",
+      "Miguel Muñoz"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "LN MAR 10.30 SC",
+    "students": [
+      "Laura Dungan",
+      "Antonella Axtell",
+      "Dilan Medina",
+      "Fernanda Barra",
+      "Lucas Muñoz",
+      "Lucas Fehling"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN INT MAR 10.30 CP",
+    "students": [
+      "Francisca Peña",
+      "Jose Gonzalez",
+      "Josefina Anabalon",
+      "Maria Cabezas",
+      "Maximiliano Mainhard",
+      "Sebastian Mainhard"
+    ],
+    "teacher": "CP",
+    "course": "LN INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO INT MAR 10.30 AV",
+    "students": [
+      "Agustina Pérez",
+      "Aileen Lagos",
+      "Emilia Martínez",
+      "Emilio Del",
+      "maría sepúlveda",
+      "Valentina Araneda",
+      "Valentina Lincolao"
+    ],
+    "teacher": "AV",
+    "course": "BIO INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "FIS INT MAR 10.30 SF",
+    "students": [
+      "Amanda Fernandez",
+      "Amaro Godoy",
+      "Maitte Jofre"
+    ],
+    "teacher": "SF",
+    "course": "FIS INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "QUI MAR 10.30 CA",
+    "students": [
+      "Cristobal Muñoz",
+      "Florencia Bastias",
+      "Josefa Saba",
+      "Josefina Ewert",
+      "Joseph Vergara"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 MIE 10.30 JR",
+    "students": [
+      "Dilan Medina",
+      "Francisca Lopez",
+      "Lucas Fehling",
+      "María Araneda",
+      "Maria Alvarez",
+      "Miguel Muñoz"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI INT MIE 10.30 CC",
+    "students": [
+      "Aileen Lagos",
+      "Florencia Pooley",
+      "Francisca Torrejón",
+      "Maria Cabezas",
+      "María Estrada",
+      "Paula Canales",
+      "Sofia Barnechea"
+    ],
+    "teacher": "CC",
+    "course": "QUI INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "LN INT MIE 10.30 SC",
+    "students": [
+      "Araneda Soto Valentina",
+      "Del Sol Vasquez Emilio",
+      "Martínez Figueroa Emilia Valentina",
+      "sepúlveda vejar maría constanza"
+    ],
+    "teacher": "SC",
+    "course": "LN INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "LN MIE 10.30 CP",
+    "students": [
+      "Benjamin Díaz",
+      "Cristobal Muñoz",
+      "Hi-Jue Wu",
+      "José Méndez",
+      "Sofia Gomez"
+    ],
+    "teacher": "CP",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "QUI MIE 10.30 CA",
+    "students": [
+      "Catalina Pritzke",
+      "Consuelo Martinez",
+      "Fernanda Abello",
+      "Juan Herrera"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "FIS INT MIE 10.30 DE",
+    "students": [],
+    "teacher": "DE",
+    "course": "FIS INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 INT MIE 10.30 PF",
+    "students": [
+      "Agustina Pérez",
+      "Lucas Plana",
+      "Maitte Jofre",
+      "Maximiliano Mainhard",
+      "Sebastian Mainhard"
+    ],
+    "teacher": "PF",
+    "course": "M1 INT"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 JUE 10.30 PF",
+    "students": [
+      "Amanda Muñoz",
+      "Benjamin Rivera",
+      "Francisca Ulloa"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI JUE 10.30 CA",
+    "students": [
+      "Agustina Morales",
+      "Benjamin Díaz",
+      "Dilan Medina",
+      "Hi-Jue Wu",
+      "Mia Vasconez",
+      "Sofia Gomez",
+      "Vicente Salvatici"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "LN JUE 10.30 SC",
+    "students": [],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "BIO JUE 10.30 AV",
+    "students": [
+      "Alvaro Colomera",
+      "Fernanda Barra",
+      "Javiera Ricke",
+      "Josefina Ewert",
+      "Miguel Muñoz",
+      "Maria Araneda"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 JUE 10.30 JR",
+    "students": [
+      "Fernanda Lassalle",
+      "Fernanda Abello"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "BIO INT JUE 10.30 FM",
+    "students": [
+      "Barbara Peña"
+    ],
+    "teacher": "FM",
+    "course": "BIO INT"
+  },
+  {
+    "day": "VIERNES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "FIS VIE 10.30 DE",
+    "students": [
+      "Agustín Llanquihuen",
+      "Agustina Morales",
+      "Catalina Pritzke",
+      "Dilan Medina",
+      "Juan Herrera",
+      "Mia Vasconez"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "VIERNES",
+    "time": "10:30 - 11:30",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "LN VIE 10.30 SC",
+    "students": [
+      "Amaro Godoy",
+      "Martina Bello",
+      "Miguel Muñoz"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "10:30 - 11:30",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN VIE 10.30 CP",
+    "students": [],
+    "teacher": "CP",
+    "course": "LN"
+  },
+  {
+    "day": "LUNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 INT LUN 11.45 JR",
+    "students": [
+      "Emilia Rivas",
+      "Gabriela Astorga",
+      "Javiera Ricke",
+      "Martin Schulz",
+      "Sofia Arriagada",
+      "Sofía Carrasco"
+    ],
+    "teacher": "JR",
+    "course": "M1 INT"
+  },
+  {
+    "day": "LUNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "FIS LUN 11.45 DE",
+    "students": [
+      "Benjamin Díaz",
+      "Cristobal Muñoz",
+      "Hi-Jue Wu",
+      "Joseph Vergara",
+      "María Araneda",
+      "Sofia Gomez",
+      "Vicente Salvatici"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "LUNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "BIO LUN 11.45 AV",
+    "students": [
+      "Antonella Axtell",
+      "Antonia Herrera",
+      "Consuelo Martinez",
+      "Dilan Medina",
+      "Josefa Saba",
+      "Lucas Fehling",
+      "Matilda Hermosilla"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 INT LUN 11.45 PF",
+    "students": [
+      "Emilia Martínez",
+      "maría sepúlveda",
+      "Sofia Barnechea",
+      "Valentina Araneda",
+      "Valentina Lincolao"
+    ],
+    "teacher": "PF",
+    "course": "M1 INT"
+  },
+  {
+    "day": "LUNES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "FIS INT LUN 11.45 SF",
+    "students": [
+      "Josefina Anabalon",
+      "Martina Sanchez"
+    ],
+    "teacher": "SF",
+    "course": "FIS INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 MAR 11.45 PF",
+    "students": [
+      "Antonella Axtell",
+      "Antonia Herrera",
+      "Ignacia Hernandez",
+      "Joaquin Muñoz",
+      "Juan Herrera",
+      "Matilda Juarez"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "FIS INT MAR 11.45 DE",
+    "students": [
+      "Florencia Pooley",
+      "Francisca Torrejón",
+      "María Estrada",
+      "Rafael Briceño"
+    ],
+    "teacher": "DE",
+    "course": "FIS INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "LN INT MAR 11.45 SC",
+    "students": [
+      "Francisca Leal",
+      "Lucas Plana",
+      "Maitte Jofre",
+      "Martin Schulz",
+      "Sofia Barnechea",
+      "Antonio xi"
+    ],
+    "teacher": "SC",
+    "course": "LN INT"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN MAR 11.45 CP",
+    "students": [
+      "Catalina Pritzke",
+      "Consuelo Martinez",
+      "Josefina Ewert",
+      "Matilda Hermosilla",
+      "Vicente Iñiguez"
+    ],
+    "teacher": "CP",
+    "course": "LN"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO MAR 11.45 AV",
+    "students": [
+      "Cristobal Muñoz",
+      "Florencia Bastias",
+      "José Méndez",
+      "Joseph Vergara",
+      "Martín Magadan",
+      "Sofia Gomez"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "FIS MAR 11.45 SF",
+    "students": [],
+    "teacher": "SF",
+    "course": "FIS"
+  },
+  {
+    "day": "MARTES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "QUI INT MAR 11.45 CA",
+    "students": [
+      "Amanda Fernandez",
+      "Amaro Godoy",
+      "Emilio Del",
+      "Francisca Peña",
+      "Josefina Anabalon",
+      "Martina Sanchez",
+      "Valentina Araneda"
+    ],
+    "teacher": "CA",
+    "course": "QUI INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "LN MIE 11.45 SC",
+    "students": [
+      "Alvaro Colomera",
+      "Fernanda Lassalle",
+      "Florencia Bastias",
+      "Francisca Lopez",
+      "Ignacia Hernandez",
+      "Maria Alvarez",
+      "Matilda Juarez"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI INT MIE 11.45 CC",
+    "students": [
+      "Agustina Pérez",
+      "Amanda Hlousek",
+      "Barbara Peña",
+      "Rafael Briceño",
+      "Sofía Carrasco",
+      "Valentina Lincolao",
+      "Antonio xi"
+    ],
+    "teacher": "CC",
+    "course": "QUI INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "LN INT MIE 11.45 CP",
+    "students": [
+      "Amanda Fernandez",
+      "Joaquin Barragan",
+      "Sofia Arriagada",
+      "Vicente caballero"
+    ],
+    "teacher": "CP",
+    "course": "LN INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "BIO INT MIE 11.45 AV",
+    "students": [
+      "Amaro Godoy",
+      "Francisca Peña",
+      "Isidora Pereda",
+      "Maria Cabezas",
+      "Paula Canales",
+      "Sofia Barnechea"
+    ],
+    "teacher": "AV",
+    "course": "BIO INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "QUI INT MIE 11.45 CA",
+    "students": [
+      "Maitte Jofre"
+    ],
+    "teacher": "CA",
+    "course": "QUI INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "M2 INT MIE 11.45 PF",
+    "students": [
+      "Maximiliano Mainhard",
+      "Florencia Ghisellini"
+    ],
+    "teacher": "PF",
+    "course": "M2 INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "FIS MIE 11.45 DE",
+    "students": [
+      "Antonia Herrera",
+      "Consuelo Martinez",
+      "Fernanda Abello",
+      "Fernanda Barra",
+      "Josefa Saba",
+      "Matilda Hermosilla",
+      "Josefina Ewert"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 JUE 11.45 PF",
+    "students": [
+      "José Méndez",
+      "Martín Magadan",
+      "Paula Canales",
+      "Sofia Gomez"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI JUE 11.45 CA",
+    "students": [
+      "Antonella Axtell",
+      "Antonia Herrera",
+      "Francisca Ulloa",
+      "Javiera Ricke",
+      "María Araneda",
+      "Miguel Muñoz"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "LN JUE 11.45 SC",
+    "students": [],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "BIO JUE 11.45 AV",
+    "students": [
+      "Agustina Morales",
+      "Amanda Muñoz",
+      "Benjamin Díaz",
+      "Juan Herrera",
+      "Mia Vasconez"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 JUE 11.45 JR",
+    "students": [
+      "Josefa Saba",
+      "Matilda Hermosilla"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "BIO JUE 11.45 FM",
+    "students": [
+      "Catalina Pritzke",
+      "Fernanda Abello",
+      "Ignacia Hernandez",
+      "Matilda Juarez",
+      "Martina Bello"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "FIS VIE 11.45 DE",
+    "students": [
+      "Antonella Axtell",
+      "Florencia Bastias"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "QUI VIE 11.45 CC",
+    "students": [
+      "Alvaro Colomera",
+      "Amanda Muñoz",
+      "Fernanda Barra",
+      "Ignacia Hernandez",
+      "Matilda Hermosilla",
+      "Matilda Juarez"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "BIO VIE 11.45 SS",
+    "students": [],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "LN VIE 11.45 SC",
+    "students": [
+      "Agustina Morales",
+      "Matilde Yañez",
+      "Mia Vasconez"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN VIE 11.45 CP",
+    "students": [],
+    "teacher": "CP",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "11.45 - 12.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 VIE 11.45 JO",
+    "students": [],
+    "teacher": "JO",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "BIO LUN 15.30 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN LUN 15.30 SC",
+    "students": [
+      "Cameron Herrera",
+      "Catalina Araya",
+      "Diego Heise",
+      "Emilia Díaz",
+      "Sofia Silva",
+      "Rocío Gauto"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "LUNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 LUN 15.30 SF",
+    "students": [
+      "Emilia Pincheira",
+      "Florencia Reyes",
+      "Helena Paz",
+      "Jose Salas",
+      "Luciana Seguel",
+      "Martin Holtheuer",
+      "Fernanda Contreras"
+    ],
+    "teacher": "SF",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "BIO LUN 15.30 FM",
+    "students": [],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 LUN 15.30 JR",
+    "students": [
+      "Ailin Benitez",
+      "Ariela Acencio",
+      "Fernanda Contreras",
+      "Juan Fuguet",
+      "Maria Dubreuil",
+      "María Caro",
+      "Martina Souto"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LN MAR 15.30 SC",
+    "students": [
+      "Joseph Vergara",
+      "Sebastián Gotschlich",
+      "Agustin Ullrich",
+      "Facundo Silva"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MARTES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI MAR 15.30 CC",
+    "students": [],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO MAR 15.30 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI MAR 15.30 CA",
+    "students": [],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 MAR 15.30 SF",
+    "students": [
+      "Aurora Herdener",
+      "Diego Heise",
+      "Hi-Jue Wu chi",
+      "Martin Gonzalez",
+      "Diego Abarzua",
+      "Constantino Chahin"
+    ],
+    "teacher": "SF",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LN MIE 15.30 CP",
+    "students": [],
+    "teacher": "CP",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "BIO MIE 15.30 FM",
+    "students": [],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "QUI MIE 15.30 CC",
+    "students": [],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "QUI MIE 15.30 CA",
+    "students": [
+      "Isabella Paz Nesbet Cisternas"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "M1 MIE 15.30 JR",
+    "students": [
+      "Antonella Espinoza",
+      "Cameron Herrera",
+      "Catalina Araya",
+      "Emilia Díaz",
+      "Sofia Silva"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "LN MIE 15.30 SC",
+    "students": [
+      "Victoria De Los Angeles Acuña Rojos",
+      "Martin Vicente Holtheuer Ojeda",
+      "Helena Ester Paz Burgos",
+      "Emilia Sofia Pincheira Brieva",
+      "Florencia José Reyes Valdebenito",
+      "Jose Tomas Salas Perez",
+      "Luciana Jesus Seguel Neira"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "LN MIE 15.30 KG",
+    "students": [],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "BIO JUE 15.30 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI JUE 15.30 CA",
+    "students": [],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "JUEVES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 JUE 15.30 JR",
+    "students": [],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "BIO JUE 15.30 FM",
+    "students": [],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "BIO VIE 15.30 SS",
+    "students": [],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LN VIE 15.30 KG",
+    "students": [
+      "Alonso Rickenberg",
+      "Aracely Silva",
+      "Constantino Chahin",
+      "Maria Kind",
+      "Mariano Muñoz"
+    ],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "M1 VIE 15.30 SF",
+    "students": [],
+    "teacher": "SF",
+    "course": "M1"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN VIE 15.30 SC",
+    "students": [
+      "Ailin Benitez",
+      "Ariela Acencio",
+      "Fernanda Contreras",
+      "Juan Fuguet",
+      "Maria Dubreuil",
+      "María Caro",
+      "Martina Souto"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO VIE 15.30 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI VIE 15.30 CC",
+    "students": [
+      "Agustina Gutierrez",
+      "Bridgette Prado",
+      "Camila Torres",
+      "Constanza Mella",
+      "Luciano Escobar"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "VIERNES",
+    "time": "15.30 - 16.30",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "MT VIE 15.30 JR",
+    "students": [
+      "Antonia Vergara",
+      "Daniel Paredes",
+      "Fernanda Aedo",
+      "Florencia Gonzalez",
+      "Francisco Cabello",
+      "Martina Figueroa"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 LUN 16.45 JR",
+    "students": [
+      "Catalina Losada",
+      "Fernanda Kiekebusch",
+      "Isabel Maturana",
+      "Jorge Olguin",
+      "Vladimir Cortes"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "HS LUN 16.45 LO",
+    "students": [
+      "Carlos Vasquez",
+      "Domenica Vasquez",
+      "Lucas Muñoz",
+      "Maria Alvarez",
+      "Fernanda Contreras",
+      "Vicente Iñiguez"
+    ],
+    "teacher": "LO",
+    "course": "HS"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "BIO LUN 16.45 AV",
+    "students": [
+      "Loretta Rivano",
+      "Luciano Escobar",
+      "Ornella Fonseca"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "FIS LUN 16.45 DE",
+    "students": [
+      "Leonor Fabiola Alcalde Negrón",
+      "Catalina Paz Belmar Mardones",
+      "Joaquin Vicente Perez Miranda",
+      "Leonor Ignacia Quintana Aguilera",
+      "Javiera Ignacia Salvatici Castro",
+      "Emilia Tenorio Yañez",
+      "Antonella Catalina Valdes Garcia"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 LUN 16.45 ES",
+    "students": [
+      "Constanza Proschle",
+      "Anastasia Gutierrez",
+      "Hans Umbach",
+      "Mia Martinez",
+      "Pia Landerretche",
+      "Vittorio Massardo"
+    ],
+    "teacher": "ES",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LS LUN 16.45 SC",
+    "students": [
+      "Catalina Cornejo",
+      "Leonor Martinez",
+      "Vicente Miranda"
+    ],
+    "teacher": "SC",
+    "course": "LS"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 LUN 16.45 PF",
+    "students": [
+      "Celeste Almendras",
+      "Benjamin Leon",
+      "Isidora Arriagada",
+      "Rodrigo Moscoso",
+      "Mateo Zavala",
+      "Vicente Paslack"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "BIO LUN 16.45 FM",
+    "students": [
+      "Ailin Benitez",
+      "Angel Araya",
+      "Cameron Herrera",
+      "Josefina Losada",
+      "Martin Holtheuer",
+      "Martina Souto"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "MT LUN 16.45 SF",
+    "students": [
+      "Agustina Gutierrez",
+      "Belen Jamarne",
+      "Javiera Lagos",
+      "Jose Henriquez",
+      "Nicolas Villamizar",
+      "Sebastián Céspedes",
+      "Alberto Riquelme",
+      "Fernando Ringler"
+    ],
+    "teacher": "SF",
+    "course": "MT"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 MAR 16.45 PF",
+    "students": [
+      "Agustin Ullrich",
+      "Bridgette Prado",
+      "Carlos Vasquez",
+      "Ignacio Bellolio",
+      "Jose Fuentes",
+      "Josefina Losada",
+      "Rocío Gauto"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LS MAR 16.45 SC",
+    "students": [
+      "Pablo Aburto",
+      "Martin Torres",
+      "Maximiliano Mediavilla"
+    ],
+    "teacher": "SC",
+    "course": "LS"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI MAR 16.45 CC",
+    "students": [
+      "Emilia Tenorio",
+      "Ian Strodthoff",
+      "María Mora",
+      "María Albornoz",
+      "Maria Fernandez",
+      "Martin Mendez"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "FIS MAR 16.45 DE",
+    "students": [
+      "Benjamín Jouannet",
+      "Emilia Beltran",
+      "Fernanda Nuñez",
+      "Maite Bastias"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "M1 MAR 16.45 JR",
+    "students": [
+      "Angel Araya",
+      "Catalina Belmar",
+      "Constanza Mella",
+      "Isabel Loaiza",
+      "Maria Ramirez",
+      "Nelson Antilao",
+      "Florencia Urbina"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 MAR 16.45 ES",
+    "students": [
+      "Diego Andurand",
+      "Domingo Puig",
+      "Ignacio Villagran",
+      "Joaquín Lailhacar",
+      "José Andurand",
+      "Renato Drake",
+      "Vicente Salvatici"
+    ],
+    "teacher": "ES",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "BIO MAR 16.45 AV",
+    "students": [
+      "Vladimir Ramon Cortes Hernandez",
+      "Aurora Soledad Herdener Lineros",
+      "Raimundo Octavio Nuñez Rachel",
+      "Emilia Javiera Rivas Seiffert",
+      "Emilio Sanhueza"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "LT MAR 16.45 LB",
+    "students": [
+      "Belen Jamarne",
+      "Javiera Lagos",
+      "Joaquín Sandoval",
+      "Jose Henriquez",
+      "Nicolas Villamizar",
+      "Paula Ortiz",
+      "Sofia Vallejos"
+    ],
+    "teacher": "LB",
+    "course": "LT"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI MAR 16.45 CA",
+    "students": [
+      "Camila Delgado",
+      "Catalina Covarrubias",
+      "Daniel Thiers",
+      "Fernanda Kiekebusch"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 MAR 16.45 SF",
+    "students": [
+      "Alan Jara",
+      "Alonso Rickenberg",
+      "Javier Luders",
+      "Maite Siles",
+      "Victoria Acuña"
+    ],
+    "teacher": "SF",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "HS INT MAR 16.45 LO",
+    "students": [
+      "Joaquin Barragan",
+      "Lucas Plana",
+      "Sebastian Mainhard",
+      "Sofia Arriagada",
+      "Matias Muñoz"
+    ],
+    "teacher": "LO",
+    "course": "HS INT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "LN MIE 16.45 SC",
+    "students": [
+      "Agustin Espinoza",
+      "Carlos Troncoso",
+      "Catalina Belmar",
+      "Mia Martinez",
+      "Vicente Toro",
+      "Vladimir Cortes"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LS MIE 16.45 CP",
+    "students": [
+      "Colomba Bórquez"
+    ],
+    "teacher": "CP",
+    "course": "LS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "QUI MIE 16.45 CC",
+    "students": [
+      "Emilia Rivas",
+      "Florencia Urbina",
+      "Rocío Gauto"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "BIO MIE 16.45 FM",
+    "students": [
+      "Agustina Gutierrez",
+      "Emilia Tenorio",
+      "Isabel Loaiza",
+      "Benjamin Leon"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 MIE 16.45 JR",
+    "students": [
+      "Amalia Minck",
+      "Bruno Osses",
+      "Camila Delgado",
+      "Cristobal Calderón",
+      "Jazmin Orellana",
+      "Mateo Campos"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "QUI MIE 16.45 CA",
+    "students": [
+      "Javiera Lagos",
+      "Josefina Losada",
+      "Martina Abarzua",
+      "Ariela Valentina Acencio Haro"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 MIE 16.45 PF",
+    "students": [
+      "Amanda Avilez Coronado",
+      "Consuelo Josefa Lassalle Astudillo",
+      "Amaya Leonor Morales Neumann",
+      "Emilio Alfonso Sanhueza Osorio",
+      "Domenica Vasquez Ramirez",
+      "Catalina Vallejos"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "FIS MIE 16.45 DE",
+    "students": [
+      "Angel Araya",
+      "Cameron Herrera",
+      "Constanza Mella",
+      "Fernanda Kiekebusch",
+      "Luciano Escobar",
+      "María Mora"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "LT MIE 16.45 LB",
+    "students": [
+      "Antonia Vergara",
+      "Daniel Paredes",
+      "Fernanda Aedo",
+      "Florencia Gonzalez",
+      "Francisco Cabello",
+      "Martina Figueroa"
+    ],
+    "teacher": "LB",
+    "course": "LT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "LN MIE 16.45 KG",
+    "students": [
+      "Fernanda Muñoz",
+      "Joaquin Hermosilla",
+      "Martin Gonzalez",
+      "Facundo Busques",
+      "Rodrigo Moscoso",
+      "Philippe Antoine"
+    ],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 JUE 16.45 PF",
+    "students": [
+      "Benjamín Jouannet",
+      "Catalina Covarrubias",
+      "Emilia Farías",
+      "Javiera Urzua",
+      "Martin Navarrete",
+      "Lucas Puelma"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "BIO JUE 16.45 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI JUE 16.45 CA",
+    "students": [
+      "Angel Araya",
+      "Catalina Belmar",
+      "Juan Jano",
+      "Maria Ramirez",
+      "Mia Martinez",
+      "Pia Landerretche",
+      "Raimundo Nuñez"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "FIS JUE 16.45 DE",
+    "students": [
+      "Agustina Gutierrez",
+      "Emilia Rivas",
+      "Ian Strodthoff",
+      "Maria Fernandez",
+      "Vladimir Cortes",
+      "Bettina Hott"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "LT JUE 16.45 SC",
+    "students": [
+      "Luciano Arjona"
+    ],
+    "teacher": "SC",
+    "course": "LT"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "MT JUE 16.45 JR",
+    "students": [
+      "Amalia de",
+      "Emilia Leal",
+      "Facundo Gómez",
+      "Isidora Mardones",
+      "Luciano morales",
+      "Ornella Fonseca",
+      "Paula González"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "LN JUE 16.45 LB",
+    "students": [
+      "Alan Jara",
+      "Constanza Mella",
+      "Domenica Vasquez",
+      "Emilio Sanhueza",
+      "Fernanda Kiekebusch",
+      "Ignacio Villagran",
+      "Martin Mendez"
+    ],
+    "teacher": "LB",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "HS JUE 16.45 JV",
+    "students": [
+      "Emiliano De",
+      "Fernanda Lassalle",
+      "Martin Gonzalez",
+      "Matilde Yañez",
+      "Paula Pichun",
+      "Mariano Muñoz"
+    ],
+    "teacher": "JV",
+    "course": "HS"
+  },
+  {
+    "day": "JUEVES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "BIO JUE 16.45 FM",
+    "students": [
+      "Emilia Beltran"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "BIO VIE 16.45 SS",
+    "students": [],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LN VIE 16.45 KG",
+    "students": [
+      "Maite Siles"
+    ],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "MT VIE 16.45 SF",
+    "students": [
+      "Diego Matamala",
+      "Joaquín Sandoval",
+      "León Kehr",
+      "María Albornoz",
+      "Octavio Riquelme",
+      "Yi-Fei Leung",
+      "Felipe Hernandez"
+    ],
+    "teacher": "SF",
+    "course": "MT"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "LN VIE 16.45 SC",
+    "students": [
+      "Amaya Morales",
+      "Bridgette Prado",
+      "Bruno Osses",
+      "Camila Torres",
+      "Daniel Thiers",
+      "Emilia Abarca",
+      "Rocio Pincheira"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "MS VIE 16.45 PF",
+    "students": [
+      "Agustina Manterola",
+      "Catalina Cornejo"
+    ],
+    "teacher": "PF",
+    "course": "MS"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO VIE 16.45 AV",
+    "students": [
+      "Antonella Valdes",
+      "Aracely Silva",
+      "Emilia Huenchullan",
+      "Joaquin Inostroza",
+      "Magdalena Hermosilla",
+      "Martin Navarrete"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI VIE 16.45 CC",
+    "students": [
+      "Cameron Herrera",
+      "Catalina Losada"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "VIERNES",
+    "time": "16.45 - 17.45",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "MT VIE 16.45 JR",
+    "students": [
+      "Florencia Acevedo",
+      "Matias Rocco",
+      "Tahía Vasquez",
+      "Tamara Matus",
+      "Vicente Muñoz",
+      "Luciano Arjona"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "MT LUN 18.00 JR",
+    "students": [
+      "Agustin Alister",
+      "Isidora Monsalve",
+      "Isidora Buck",
+      "Juan Saez",
+      "Nicolas Jofré",
+      "Nicolas Vidal",
+      "Vicente Canteros",
+      "O: Gaspar Nisin"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "HS LUN 18.00 JV",
+    "students": [
+      "Antonella Espinoza",
+      "Francisca Mendoza",
+      "Valentina Panichine"
+    ],
+    "teacher": "JV",
+    "course": "HS"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LN LUN 18.00 LB",
+    "students": [
+      "Antonella Valdes",
+      "Emilia Huenchullan",
+      "Francisco García",
+      "Ignacio Sandoval",
+      "Julieta Coronado",
+      "Diego Vives"
+    ],
+    "teacher": "LB",
+    "course": "LN"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "BIO LUN 18.00 AV",
+    "students": [
+      "Benjamin Cid",
+      "Isidora San",
+      "Martina Valdés",
+      "Vicente Toro"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "FIS LUN 18.00 DE",
+    "students": [
+      "Emilia Victoria Gomez Silva",
+      "Catalina Isidora Gonzalez Hetz",
+      "Bastian Alfonso Henning Avendaño"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 LUN 18.00 ES",
+    "students": [
+      "Amparo Birke",
+      "Barbara Diaz",
+      "Ignacio Valenzuela",
+      "Isidora Rivas",
+      "Joaquin Perez",
+      "José Hoyuela",
+      "Matias Vera"
+    ],
+    "teacher": "ES",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 7,
+    "classCode": "QUI LUN 18.00 CC",
+    "students": [],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LP LUN 18.00 SC",
+    "students": [
+      "Gaston Pizarro",
+      "Matías Linconao"
+    ],
+    "teacher": "SC",
+    "course": "LP"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "MS LUN 18.00 PF",
+    "students": [
+      "Tomás Díaz",
+      "Colomba Bórquez",
+      "Emilia Muñoz",
+      "Leandro Contreras",
+      "Leonor Martinez",
+      "Matilda Vorphal",
+      "Vicente Miranda"
+    ],
+    "teacher": "PF",
+    "course": "MS"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "BIO LUN 18.00 FM",
+    "students": [],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "MS LUN 18.00 SF",
+    "students": [
+      "Ariela Aedo",
+      "Diego Fuentes",
+      "Diego Moraga",
+      "Leon Chancerel",
+      "Matilda Rojo",
+      "catalina labraña",
+      "Catalina Villagran"
+    ],
+    "teacher": "SF",
+    "course": "MS"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "MT MAR 18.00 PF",
+    "students": [
+      "Amalia Fuentes",
+      "Angeles Barrientos",
+      "Martín Soto",
+      "Matilda Gomez",
+      "Victoria Salas",
+      "Violeta Schiattino",
+      "Antonio Conejeros"
+    ],
+    "teacher": "PF",
+    "course": "MT"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LT MAR 18.00 SC",
+    "students": [
+      "Agustin Alister",
+      "Isidora Monsalve",
+      "Isidora Buck",
+      "León Kehr",
+      "María Albornoz",
+      "Nicolas Jofré",
+      "Vicente Canteros"
+    ],
+    "teacher": "SC",
+    "course": "LT"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "M1 MAR 18.00 JR",
+    "students": [
+      "Agustin Espinoza",
+      "Carlos Troncoso",
+      "Ian Strodthoff",
+      "Maria Kind",
+      "Martina Valdés",
+      "Vicente Toro"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 MAR 18.00 ES",
+    "students": [
+      "Benjamin Hompart",
+      "Emilia Restovic",
+      "Facundo Rivadeneira",
+      "Julieta Coronado",
+      "Magdalena Hernando",
+      "Sebastián Gotschlich",
+      "Vicente Gallardo"
+    ],
+    "teacher": "ES",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "BIO MAR 18.00 AV",
+    "students": [
+      "Nelson Antilao",
+      "Facundo Iñaki Busques Cancino",
+      "María José Godoy Fuentes",
+      "Emilio Francisco Orrego Barría",
+      "Bridgette Prado Mora",
+      "Pía Josefa Pulido Herrera"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "LN MAR 18.00 LB",
+    "students": [
+      "Catalina Covarrubias",
+      "Clemente Pérez",
+      "Cristobal Schleef",
+      "Emilia Farías",
+      "Juan Jano",
+      "Martin Navarrete",
+      "Renato Drake"
+    ],
+    "teacher": "LB",
+    "course": "LN"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI MAR 18.00 CA",
+    "students": [
+      "Constanza Proschle",
+      "Anastasia Gutierrez",
+      "Matías Cartes",
+      "Sabina Gallardo",
+      "Vladimir Cortes",
+      "Bettina Hott"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "MP MAR 18.00 SF",
+    "students": [
+      "Bruno Castillo",
+      "Gaston Pizarro",
+      "Magdalena Hettich",
+      "Martina Hidalgo",
+      "Veronica Cooper",
+      "Emanuel Almonacid"
+    ],
+    "teacher": "SF",
+    "course": "MP"
+  },
+  {
+    "day": "MARTES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "HS MAR 18.00 LO",
+    "students": [],
+    "teacher": "LO",
+    "course": "HS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "LN MIE 18.00 SC",
+    "students": [
+      "Benjamin Cid",
+      "Camila Iturra",
+      "Cristobal Calderón",
+      "Jacobe Henriquez",
+      "Isidora San Martin",
+      "Martina Garces",
+      "Matias Vera"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LT MIE 18.00 CP",
+    "students": [
+      "Amalia Fuentes",
+      "Diego Matamala",
+      "Florencia Henriquez",
+      "Juan Saez",
+      "Martina Peña",
+      "Nicolas Vidal",
+      "Wilfred Noel"
+    ],
+    "teacher": "CP",
+    "course": "LT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "QUI MIE 18.00 CC",
+    "students": [
+      "Bastian Henning",
+      "Vicente Canteros",
+      "Sofía Drazic"
+    ],
+    "teacher": "CC",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "BIO MIE 18.00 FM",
+    "students": [
+      "Celeste Almendras",
+      "Jazmin Orellana",
+      "Nicolas Jofré",
+      "Vittorio Massardo"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M2 MIE 18.00 JR",
+    "students": [
+      "Barbara Peña",
+      "Carlos Vasquez",
+      "Francisco Aguayo",
+      "Sabina Gallardo",
+      "Vicente Gallardo",
+      "Magdalena Romero"
+    ],
+    "teacher": "JR",
+    "course": "M2"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "QUI MIE 18.00 CA",
+    "students": [
+      "Leonor Alcalde",
+      "María José Godoy Fuentes",
+      "Amaya Leonor Morales Neumann"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "MS MIE 18.00 PF",
+    "students": [
+      "Pablo Aburto",
+      "Florencia Reveco",
+      "Joaquín Acuña",
+      "Josefa Robles",
+      "Luciano Muñoz",
+      "Martin Torres",
+      "Maximiliano Mediavilla"
+    ],
+    "teacher": "PF",
+    "course": "MS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "FIS MIE 18.00 DE",
+    "students": [
+      "Agustín Flores",
+      "Emilio Sanhueza",
+      "Josefina Losada",
+      "Juan Carrillo",
+      "Matías Cartes"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "LT MIE 18.00 LB",
+    "students": [
+      "Cristóbal Albornoz",
+      "Fernando Ringler",
+      "Florencia Acevedo",
+      "Matias Rocco",
+      "Tahía Vasquez",
+      "Tamara Matus",
+      "Vicente Muñoz"
+    ],
+    "teacher": "LB",
+    "course": "LT"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "LN MIE 18.00 KG",
+    "students": [
+      "Adan Ramos",
+      "Javiera Campos",
+      "Joaquin Inostroza",
+      "Jorge Olguin",
+      "Maite Bastias"
+    ],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 JUE 18.00 PF",
+    "students": [
+      "Agustín Flores",
+      "Agustin Pavez",
+      "Camila Torres",
+      "Catalina Gonzalez",
+      "Francisca Mendoza",
+      "Javiera Campos",
+      "Juan Daza"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "BIO JUE 18.00 AV",
+    "students": [
+      "Anastasia Gutierrez",
+      "Emilia Navarrete",
+      "Ian Strodthoff",
+      "María Albornoz",
+      "Rocio Pincheira",
+      "Sebastián Gotschlich"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "QUI JUE 18.00 CA",
+    "students": [
+      "Antonella Valdes",
+      "Maite Bastias",
+      "Emilia Abarca",
+      "Javiera Salvatici"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "FIS JUE 18.00 DE",
+    "students": [
+      "Camila Iturra",
+      "Catalina Covarrubias",
+      "María Godoy",
+      "Martina Valdés",
+      "Rocío Gauto"
+    ],
+    "teacher": "DE",
+    "course": "FIS"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 JUE 18.00 JR",
+    "students": [
+      "Benjamin Reinike",
+      "Cristobal Schleef",
+      "Juan Jano",
+      "Juan Sabugo",
+      "Pedro Luengo",
+      "Raimundo Lehker",
+      "Salvador Canahuate"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "LN JUE 18.00 LB",
+    "students": [
+      "Ignacio Bellolio",
+      "Jose Fuentes",
+      "José Hoyuela",
+      "Lucas Morales",
+      "Magdalena Espinosa",
+      "Sergio Rebolledo"
+    ],
+    "teacher": "LB",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "HS JUE 18.00 JV",
+    "students": [
+      "Amanda Avilez",
+      "Maria Kind"
+    ],
+    "teacher": "JV",
+    "course": "HS"
+  },
+  {
+    "day": "JUEVES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "BIO JUE 18.00 FM",
+    "students": [
+      "Alan Jara",
+      "Matías Cartes"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "BIO VIE 18.00 SS",
+    "students": [],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "LN VIE 18.00 KG",
+    "students": [],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "FIS VIE 18.00 SF",
+    "students": [
+      "Anastasia Gutierrez",
+      "Bridgette Prado",
+      "Camila Torres",
+      "María Albornoz"
+    ],
+    "teacher": "SF",
+    "course": "FIS"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "M1 VIE 18.00 PF",
+    "students": [
+      "Emilia Ortiz",
+      "Josefa Parrant Schovar",
+      "Nicolas Harstman",
+      "Joaquin Hermosilla"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO VIE 18.00 AV",
+    "students": [
+      "Catalina Losada"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "VIERNES",
+    "time": "18.00 - 19.00",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 VIE 18.00 JR",
+    "students": [
+      "Adan Ramos",
+      "Isabella Nesbet",
+      "Joaquin Inostroza",
+      "Matías Cartes",
+      "Micaela Insunza",
+      "Sabina Gallardo",
+      "Trinidad Peguero"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M2 LUN 19.15 JR",
+    "students": [
+      "Agustin Saez",
+      "Antonia Herrera",
+      "Aurora Rogel",
+      "Lucas Morales",
+      "Vicente Urrutia"
+    ],
+    "teacher": "JR",
+    "course": "M2"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "HS LUN 19.15 JV",
+    "students": [
+      "Amalia Minck",
+      "Martin Sanhueza",
+      "Philippe Antoine",
+      "Renato Drake"
+    ],
+    "teacher": "JV",
+    "course": "HS"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LT LUN 19.15 LB",
+    "students": [
+      "Catalina Tapia",
+      "Facundo Gómez",
+      "Felipe Fernández",
+      "Fernanda Caro",
+      "James Collyer",
+      "Lucas Argandoña",
+      "Antonio Conejeros"
+    ],
+    "teacher": "LB",
+    "course": "LT"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 4,
+    "classCode": "BIO LUN 19.15 AV",
+    "students": [
+      "Catalina Covarrubias",
+      "Bastian Henning",
+      "Catalina Gonzalez"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "LN LUN 19.15 SC",
+    "students": [
+      "Sofía Seco",
+      "Angel Araya",
+      "Aurora Herdener",
+      "Benjamín Hernandez",
+      "Emiliano De La Cruz",
+      "Isidora Cifuentes",
+      "Javiera Luders"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 LUN 19.15 PF",
+    "students": [
+      "Benjamin Cid",
+      "Emilio Parada",
+      "Fernanda Sandoval",
+      "Isidora San",
+      "Matias Flores",
+      "Maximo Riquelme"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "BIO LUN 19.15 SS",
+    "students": [],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "LUNES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "FIS LUN 19.15 SF",
+    "students": [
+      "Yi-Fei Leung"
+    ],
+    "teacher": "SF",
+    "course": "FIS"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "MT MAR 19.15 PF",
+    "students": [
+      "Fernanda Caro",
+      "Francisca Castro",
+      "Laura Zenteno",
+      "Martina Guajardo",
+      "Noelia Quiroz",
+      "Sofía Pérez",
+      "Valentina Venegas"
+    ],
+    "teacher": "PF",
+    "course": "MT"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 3,
+    "classCode": "LN MAR 19.15 SC",
+    "students": [
+      "Agustin Saez",
+      "Bastian Henning",
+      "Florencia Jara",
+      "Cristobal Paredes",
+      "Josefina Henning",
+      "Vicente Paslack"
+    ],
+    "teacher": "SC",
+    "course": "LN"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "MT MAR 19.15 JR",
+    "students": [
+      "Catalina Tapia",
+      "Fernanda Mella",
+      "Maite Verdugo",
+      "James Collyer",
+      "Javiera Vargas"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "BIO MAR 19.15 SS",
+    "students": [
+      "Javiera Urzua",
+      "Rocío Gauto"
+    ],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "BIO MAR 19.15 AV",
+    "students": [],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "QUI MAR 19.15 CA",
+    "students": [
+      "Magdalena Espinosa",
+      "Rocio Pincheira"
+    ],
+    "teacher": "CA",
+    "course": "QUI"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 4,
+    "classCode": "M1 MAR 19.15 SF",
+    "students": [
+      "Emiliano De",
+      "Isidora Cifuentes",
+      "Lucas Morales",
+      "Maximiliano Rodriguez",
+      "Philippe Antoine",
+      "Sergio Rebolledo",
+      "María José Godoy"
+    ],
+    "teacher": "SF",
+    "course": "M1"
+  },
+  {
+    "day": "MARTES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "HS MAR 19.15 LO",
+    "students": [],
+    "teacher": "LO",
+    "course": "HS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 5,
+    "classCode": "BIO MIE 19.15 FM",
+    "students": [
+      "Camila Iturra",
+      "Emilia Gomez",
+      "Javier Luders",
+      "Maximo Riquelme",
+      "O: Gaspar Nisin"
+    ],
+    "teacher": "FM",
+    "course": "BIO"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "M1 MIE 19.15 JR",
+    "students": [
+      "Facundo Silva",
+      "Karla Casanova",
+      "Martina Garces",
+      "Maximo Polanco",
+      "Jacobe henriquez",
+      "Tomás Recabarren"
+    ],
+    "teacher": "JR",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 1,
+    "classCode": "CS MIE 19.15 CA",
+    "students": [
+      "LEONOR MARTINEZ (CONFIRMAR)",
+      "VICENTE MIRANDA (CONFIRMAR)",
+      "TOMAS DIAZ (CONFIRMAR)"
+    ],
+    "teacher": "CA",
+    "course": "CS"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 2,
+    "classCode": "M1 MIE 19.15 PF",
+    "students": [
+      "Josefina Henning",
+      "Clemente Sanhueza",
+      "Martina Ortiz",
+      "Valentina Panichine",
+      "Vicente Urrutia",
+      "Cristobal Kind"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 3,
+    "classCode": "BIO MIE 19.15 SS",
+    "students": [
+      "Emilia Abarca",
+      "Javiera Salvatici",
+      "Leonor Alcalde",
+      "Maite bastias"
+    ],
+    "teacher": "SS",
+    "course": "BIO"
+  },
+  {
+    "day": "MIERCOLES",
+    "time": "19.15 - 20.15",
+    "sede": "INES DE SUAREZ",
+    "sala": 5,
+    "classCode": "LN MIE 19.15 KG",
+    "students": [],
+    "teacher": "KG",
+    "course": "LN"
+  },
+  {
+    "day": "JUEVES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 1,
+    "classCode": "M1 JUE 19.15 PF",
+    "students": [
+      "Agustin Saez",
+      "Antonella Valdes",
+      "Bastian Henning",
+      "Benjamín Hernandez",
+      "Emilia Huenchullan",
+      "Florencia Jara",
+      "Francisco Aguayo"
+    ],
+    "teacher": "PF",
+    "course": "M1"
+  },
+  {
+    "day": "JUEVES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 2,
+    "classCode": "BIO JUE 19.15 AV",
+    "students": [
+      "Camila Torres"
+    ],
+    "teacher": "AV",
+    "course": "BIO"
+  },
+  {
+    "day": "JUEVES",
+    "time": "19.15 - 20.15",
+    "sede": "LAS ENCINAS",
+    "sala": 6,
+    "classCode": "MT JUE 19.15 JR",
+    "students": [
+      "Cristóbal Albornoz",
+      "Elisa Gonzalez",
+      "Emilia Navarrete",
+      "Emilio Flores",
+      "Florencia Henriquez",
+      "Juan Carrillo",
+      "Wilfred Noel"
+    ],
+    "teacher": "JR",
+    "course": "MT"
+  }
+]

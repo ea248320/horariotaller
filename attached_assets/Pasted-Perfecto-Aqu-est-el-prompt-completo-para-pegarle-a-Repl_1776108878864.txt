@@ -1,0 +1,56 @@
+Perfecto. Aquí está el prompt completo para pegarle a Replit:
+
+---
+
+**Copia todo esto y pégalo en Replit:**
+
+---
+
+Quiero agregar un **gestor de tareas estilo Monday** a la aplicación existente de horarios. Debe integrarse completamente con el sistema actual (misma base de datos, mismos usuarios, mismo diseño visual).
+
+**FUNCIONALIDADES REQUERIDAS:**
+
+**Panel del Jefe/Admin:**
+- Vista general de todas las sedes con sus tareas
+- Crear tareas y asignarlas a una sede específica o a una persona específica
+- Ver el progreso de cada tarea (% completado basado en checklist)
+- Filtrar tareas por sede, estado (pendiente, en progreso, completada) y fecha límite
+- Tablero tipo Kanban con columnas: Pendiente → En Progreso → Completada
+- Dashboard con resumen: cuántas tareas hay por sede, cuáles vencen pronto
+
+**Panel de cada Sede (secretarias/personal):**
+- Ver solo las tareas asignadas a su sede
+- Cada tarea tiene un checklist interno con ítems que pueden marcar como completados
+- Panel personal donde cada usuaria puede crear sus propias notas/tareas privadas (solo ella las ve)
+- Ver fecha límite de cada tarea con indicador de color: verde (a tiempo), amarillo (próxima a vencer), rojo (vencida)
+
+**ESTRUCTURA DE CADA TAREA:**
+- Título
+- Descripción
+- Sede asignada
+- Fecha límite
+- Prioridad: Alta / Media / Baja
+- Checklist interno (múltiples ítems que se pueden marcar ✅)
+- Estado: Pendiente / En Progreso / Completada
+- Fecha de creación y quién la creó
+
+**SEDES:**
+- Cada sede tiene su propio panel aislado (no ve las tareas de otras sedes)
+- El admin/jefe ve TODAS las sedes
+- Usar las mismas sedes que ya existen en la aplicación
+
+**DISEÑO:**
+- Mismo estilo visual que la aplicación actual
+- Diseño profesional, limpio y moderno
+- Responsive (funciona en celular y escritorio)
+- Usar los mismos colores y componentes actuales
+
+**TÉCNICO:**
+- Agregar las rutas necesarias en el backend (Railway)
+- Guardar tareas en la base de datos existente
+- Agregar una nueva pestaña o sección en el frontend llamada "Tareas"
+- El acceso al panel de admin requiere el mismo login de admin que ya existe
+
+---
+
+¿Quieres que le agregue algo más antes de pegarlo, como los nombres exactos de las sedes?

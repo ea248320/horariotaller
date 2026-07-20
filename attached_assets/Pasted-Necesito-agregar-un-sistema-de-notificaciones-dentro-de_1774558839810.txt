@@ -1,0 +1,57 @@
+Necesito agregar un sistema de notificaciones dentro de la aplicación administrativa en la cual cada sede tiene su sistema que las notificaciones solo sean de esa sede y que no le llegue a la otra.
+
+Objetivo:
+Quiero que, cuando ocurra un cambio importante, aparezca una alerta temporal en pantalla y que además esa información quede guardada en una pestaña de notificaciones para revisarla después.
+
+Funcionalidad requerida:
+
+1. Mostrar alerta temporal en pantalla
+- Cuando se elimine un alumno, debe aparecer una notificación visual pequeña en pantalla.
+- Cuando quede un cupo disponible, también debe aparecer una notificación visual pequeña en pantalla.
+- Esta alerta debe mostrarse automáticamente.
+- Debe durar pocos segundos (idealmente entre 3 y 5 segundos) y luego desaparecer sola.
+- La alerta no debe bloquear el uso del sistema.
+- Debe mostrarse en una esquina superior, preferiblemente arriba a la derecha.
+
+2. Crear una pestaña o sección de “Notificaciones”
+- Debe existir una pestaña, botón o sección visible llamada “Notificaciones”.
+- En esa sección deben quedar guardadas las notificaciones generadas por el sistema.
+- Las notificaciones deben mostrarse en orden de más reciente a más antigua.
+- Cada notificación debe incluir:
+  - tipo de notificación
+  - título
+  - mensaje
+  - fecha y hora
+  - estado de leída o no leída
+
+3. Eventos que deben generar notificación
+- Alumno eliminado
+- Cupo disponible
+
+4. Comportamiento esperado al eliminar un alumno
+- Si se elimina un alumno, se debe guardar una notificación con el tipo “alumno_eliminado”.
+- Además, si al eliminar al alumno queda al menos un cupo libre en ese horario, curso o bloque, se debe generar otra notificación con el tipo “cupo_disponible”.
+
+5. Contenido de las notificaciones
+Ejemplos de texto:
+- Título: “Alumno eliminado”
+  Mensaje: “Juan Pérez fue eliminado de Matemática - Lunes 10:00”
+- Título: “Cupo disponible”
+  Mensaje: “Quedó 1 cupo libre en Matemática - Lunes 10:00”
+
+6. Gestión de notificaciones
+- Cada notificación debe poder eliminarse manualmente con un botón “Eliminar”.
+- Debe existir también un botón “Eliminar todas” para limpiar la lista completa.
+- Idealmente también se puede marcar una notificación como leída al verla.
+- Las notificaciones no deben acumularse indefinidamente sin control.
+
+7. Indicador visual
+- Debe existir un contador visible de notificaciones no leídas.
+- Este contador puede mostrarse en una campana o en la pestaña “Notificaciones”.
+- Ejemplo: “Notificaciones (3)” o icono de campana con número.
+
+8. Diseño visual sugerido
+- Las alertas de “Alumno eliminado” deben verse en color rojo o con indicador rojo.
+- Las alertas de “Cupo disponible” deben verse en color verde o con indicador verde.
+- Las notificaciones leídas pueden verse en tono más suave o gris.
+ahora en otra cosa es que uno pueda agregar otra sede manualmente y que se puedan cumplir las mismas funciones de todas, por ejemplo ahora estan las 4 sedes y que yo pueda agregrar cuantas sedes necesite 

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      const path = window.location.pathname;
+      const base = "/Emilia-alarcon1";
+      const newPath = path.startsWith(base) ? path : base + path;
+      window.location.replace(
+        window.location.origin + base +
+        "/?redirect=" + encodeURIComponent(newPath.replace(base, "") || "/")
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
