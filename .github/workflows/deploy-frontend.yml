@@ -42,7 +42,6 @@ jobs:
       - name: Build del frontend
         run: pnpm --filter @workspace/horario-secretarias run build
         env:
-          VITE_API_URL: https://workspaceapi-server-production-5bd0.up.railway.app
           NODE_ENV: production
 
       - name: Configurar GitHub Pages
