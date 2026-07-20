@@ -1,0 +1,119 @@
+Necesito agregar una sección llamada "Orientación" en el menú principal de esta app. Los datos están en Railway (PostgreSQL).
+
+¿QUÉ ES?
+Un módulo para agendar citas con las orientadoras (psicólogas) del preuniversitario. Cubre todo el año académico (enero a diciembre), ya que los usuarios agendan con anticipación. Cada orientadora tiene su propio horario independiente. El diseño debe ser moderno, atractivo y fácil de usar desde el celular.
+
+HAY 3 ROLES EN ESTE MÓDULO
+
+Usuario / alumno — agenda y cancela su propia cita
+Orientadora — ve su propia agenda y gestiona los estados de sus citas
+Admin — gestiona las orientadoras, sus horarios y bloqueos, pero NO toca los estados de las citas
+
+
+SELECTOR DE ORIENTADORA — PESTAÑAS EN LA PARTE SUPERIOR
+Al entrar a "Orientación" aparecen pestañas, una por cada orientadora activa (ej: "PS. Aldana" / "PS. María" / "PS. Camila"). Al tocar una pestaña se carga su horario. Las pestañas se generan dinámicamente según las orientadoras activas en la base de datos.
+
+NAVEGACIÓN POR MES Y SEMANA — DOS NIVELES
+Nivel 1 — Selector de mes:
+
+Selector de mes visible en la parte superior: ← Enero / Febrero / ... / Diciembre →
+El mes actual aparece seleccionado por defecto
+Se puede navegar a cualquier mes del año hacia adelante (agendar con anticipación) o hacia atrás (ver historial)
+
+Nivel 2 — Semanas dentro del mes:
+
+Dentro del mes se muestran todas sus semanas en scroll vertical o como secciones desplegables
+Cada semana tiene encabezado (ej: "Semana del 6 al 10 de enero")
+También se puede navegar semana a semana con flechas ← →
+
+
+ESTRUCTURA DE CADA BLOQUE HORARIO
+Cada día de atención muestra sus bloques horarios (ej: 10:00, 11:00, 12:00, 15:00, 16:00, 17:00, 18:00, 19:00). Cada bloque tiene:
+
+Hora (fija)
+Nombre del usuario que agendó (vacío si está libre)
+Estado "Confirma" — Confirma / Reagenda / Cancela / Osorno
+Estado "Asiste" — Asiste / No asiste
+
+Los dropdowns de estado solo son editables por la orientadora dueña de esa agenda, no por el admin ni por los usuarios.
+
+VISTA Y PERMISOS SEGÚN ROL
+Usuario / alumno:
+
+Ve los bloques como libre / ocupado / su propia cita
+Puede agendar un bloque libre y cancelar su propia cita
+NO ve los dropdowns de estado
+Solo 1 cita activa a la vez
+Banner fijo arriba que muestra su cita activa con botón para cancelar
+
+Orientadora (su propia agenda):
+
+Ve su agenda igual que el Excel: nombre del alumno en cada bloque + los dos dropdowns de estado
+Puede cambiar el estado "Confirma" de cada cita: Confirma (verde) / Reagenda (amarillo) / Cancela (rojo) / Osorno (morado)
+Puede cambiar el estado "Asiste" de cada cita: Asiste (verde) / No asiste (rosado)
+NO ve ni edita las agendas de las otras orientadoras
+NO tiene acceso al panel admin
+
+Admin:
+
+Gestiona orientadoras y horarios (ver sección admin más abajo)
+Puede ver todas las agendas en modo lectura
+NO puede modificar los estados de las citas — eso es exclusivo de cada orientadora
+
+
+CÓMO AGENDA UN USUARIO
+
+Elige la pestaña de la orientadora
+Selecciona el mes y navega por semanas
+Hace clic en un bloque libre
+Modal de confirmación: orientadora, día, hora, campo de motivo opcional (máx 200 caracteres)
+Confirma → su nombre queda en ese bloque
+Banner superior muestra su cita activa con botón para cancelar
+
+
+VISTA DE LA ORIENTADORA — SU AGENDA
+Cada orientadora tiene acceso a su propia agenda dentro de "Orientación". Desde ahí:
+
+Ve su horario semanal/mensual con los nombres de los alumnos que agendaron
+Puede navegar por mes y semana igual que los usuarios
+Cambia los dropdowns de estado directamente en cada bloque:
+
+"Confirma": Confirma / Reagenda / Cancela / Osorno
+"Asiste": Asiste / No asiste
+
+
+Los cambios de estado se guardan instantáneamente en la base de datos
+Solo ve y edita su propia agenda, nunca la de otra orientadora
+
+
+PANEL ADMIN — SOLO GESTIÓN ESTRUCTURAL
+
+Agregar nueva orientadora: nombre, título, foto (opcional), días y horarios de atención → aparece automáticamente como nueva pestaña
+Editar datos de una orientadora existente
+Desactivar / eliminar orientadora → desaparece su pestaña, sus citas pendientes muestran aviso al usuario
+Definir el orden de las pestañas
+Configurar los días y horarios habituales de cada orientadora (se repiten en todas las semanas del año)
+Bloquear días o bloques específicos de una semana puntual (ej: bloquear martes 20 de mayo sin afectar el resto del año)
+Agregar días extra excepcionales (ej: un miércoles que normalmente no atiende)
+Bloquear rangos de fechas (ej: vacaciones, feriados)
+Ver todas las citas del año en modo lectura con filtros por orientadora, mes y semana
+
+
+BASE DE DATOS EN RAILWAY (PostgreSQL):
+Tabla orientadora: id, nombre, titulo, foto_url, activa (boolean), orden (integer), creada_en
+Tabla horario_habitual: id, orientadora_id (FK), dia_semana (lunes/.../viernes), hora_inicio (HH:MM), activo (boolean)
+Tabla bloqueo_fecha: id, orientadora_id (FK), fecha_inicio (DATE), fecha_fin (DATE), hora_inicio (HH:MM nullable), motivo (text nullable)
+Tabla desbloqueo_fecha: id, orientadora_id (FK), fecha (DATE), hora_inicio (HH:MM)
+Tabla cita_orientacion: id, usuario_id (FK), orientadora_id (FK), fecha (DATE), hora_inicio (HH:MM), motivo (text nullable, max 200), estado_confirma (pendiente / confirma / reagenda / cancela / osorno), estado_asiste (pendiente / asiste / no_asiste), creada_en
+
+REGLAS
+
+No agendar en bloques ocupados, bloqueados ni fechas pasadas
+Solo 1 cita activa por usuario a la vez
+Los horarios habituales se replican automáticamente en todas las semanas del año
+Solo la orientadora dueña de la agenda puede modificar los estados de sus citas
+Si se desactiva una orientadora, sus citas muestran aviso al usuario
+Zona horaria: America/Santiago (Chile)
+Responsive con prioridad mobile
+Mismo sistema de autenticación y estilo base de la app
+Diseño moderno: colores suaves, bordes redondeados, sombras ligeras, profesional y amigable

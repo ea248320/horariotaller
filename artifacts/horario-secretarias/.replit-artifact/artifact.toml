@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Horario Secretarias Temuco"
+version = "1.0.0"
+id = "artifacts/horario-secretarias"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 22059
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/horario-secretarias run dev"
+
+[services.env]
+PORT = "22059"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/horario-secretarias", "run", "build"]
+publicDir = "artifacts/horario-secretarias/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

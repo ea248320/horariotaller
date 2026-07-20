@@ -1,0 +1,42 @@
+Hola, necesito implementar una mejora en el sistema de horarios relacionada con los semestres.
+
+**Contexto:**
+El año académico está dividido en Primer Semestre y Segundo Semestre. Los cursos pueden ser de tres tipos:
+1. **Cursos del Primer Semestre** – solo se dictan en el primer semestre.
+2. **Cursos del Segundo Semestre** – solo se dictan en el segundo semestre.
+3. **Cursos Anuales** – se dictan durante todo el año.
+
+---
+
+**Lo que necesito – Vista por pestañas:**
+En la vista del horario, quiero que existan **dos pestañas**:
+- 📋 **Horario Primer Semestre**
+- 📋 **Horario Segundo Semestre**
+
+Cada pestaña muestra los cursos de ese semestre. Los **cursos anuales deben aparecer en ambas pestañas**. La detección de topes de horario debe operar de forma **independiente dentro de cada pestaña**, evitando conflictos cruzados entre semestres.
+
+**Resultado esperado:**
+- Pestaña Primer Semestre: cursos anuales + cursos exclusivos del primer semestre.
+- Pestaña Segundo Semestre: cursos anuales + cursos exclusivos del segundo semestre.
+- Los topes se validan solo dentro del semestre correspondiente.
+
+---
+
+**Cursos que cambian de nombre entre semestres:**
+Hay casos en que un curso ocupa el **mismo bloque horario** en ambos semestres pero tiene **distinto nombre** en cada uno. Por ejemplo:
+- Primer Semestre: *Bio Int – Mar 10:30*
+- Segundo Semestre: *Bio Cont – Mar 10:30*
+
+Son cursos distintos pero comparten horario. Cada uno debe tener su **propia lista de alumnos editable de forma independiente**.
+
+---
+
+**Lógica de copia de alumnos al pasar al Segundo Semestre:**
+Al generar los cursos del segundo semestre a partir del primero, la copia debe seguir esta regla:
+
+- **Cursos que NO son "Int"** → se copian al segundo semestre **con su lista de alumnos incluida**.
+- **Cursos "Int"** → se copian al segundo semestre **sin alumnos** (la lista queda vacía para ser completada manualmente).
+
+Esto se debe a que los cursos "Int" (introductorios) cambian su nómina de alumnos en el segundo semestre, mientras que el resto de los cursos mantiene los mismos alumnos.
+
+Por favor, asegurate de que esta lógica quede bien estructurada desde la base.
