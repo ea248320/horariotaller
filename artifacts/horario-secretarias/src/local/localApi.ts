@@ -6,7 +6,8 @@
 // de main.tsx) instala los interceptores.
 // ─────────────────────────────────────────────────────────────────────────────
 const PREFIX = "htdb:";
-const SEED_MARKER = `${PREFIX}seeded:v1`;
+const SEED_MARKER = `${PREFIX}seeded:v2`;
+const OLD_SEED_MARKER = `${PREFIX}seeded:v1`;
 
 // ─── Capa de almacenamiento ──────────────────────────────────────────────────
 
@@ -37,7 +38,24 @@ const nowIso = () => new Date().toISOString();
 
 // ─── Semilla inicial ─────────────────────────────────────────────────────────
 
+// La versión v1 sembraba los 4 campus de Temuco con su horario de ejemplo.
+// Esta migración elimina solo esos datos precargados (marcados isSystem),
+// conservando campus, clases y demás datos creados por el cliente.
+function migrateFromV1() {
+  if (!localStorage.getItem(OLD_SEED_MARKER)) return;
+  const horarios = load("horarios");
+  const seededIds = new Set(horarios.filter(h => h.isSystem).map(h => h.id));
+  if (seededIds.size > 0) {
+    save("horarios", horarios.filter(h => !seededIds.has(h.id)));
+    save("classes", load("classes").filter(c => !seededIds.has(c.horario)));
+    save("students", load("students").filter(s => !seededIds.has(s.classHorario)));
+  }
+  localStorage.removeItem(OLD_SEED_MARKER);
+  localStorage.setItem(SEED_MARKER, "1");
+}
+
 function seedIfNeeded() {
+  migrateFromV1();
   if (localStorage.getItem(SEED_MARKER)) return;
 
   // La plataforma parte vacía: cada cliente crea sus campus, sedes y clases
