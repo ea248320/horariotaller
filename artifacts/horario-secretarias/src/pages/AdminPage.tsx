@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback, useRef } from "react"
 import {
   Plus, Trash2, RefreshCw, AlertTriangle, BookOpen,
   Search, X, CheckCircle, ChevronDown, Upload, FileSpreadsheet,
-  Pencil, Check, Building2, ChevronRight, MapPin, Users,
+  Pencil, Check, Building2, ChevronRight, MapPin, Users, Sparkles,
 } from "lucide-react";
 import { UserAvatar, AVAILABLE_COLORS, USER_COLORS } from "@/context/UserContext";
 import {
@@ -10,6 +10,7 @@ import {
   type ClassEntry,
 } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
+import { useSettings } from "@/context/SettingsContext";
 import { apiUrl } from "@/lib/api";
 
 const SEDE_DISPLAY: Record<string, string> = {
@@ -236,6 +237,78 @@ function CourseCombobox({
   );
 }
 
+// ─── Datos de la plataforma (nombre configurable por el cliente) ──────────────
+function PlatformSettingsCard() {
+  const { settings, updateSettings } = useSettings();
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(settings.platformName);
+  const [subtitle, setSubtitle] = useState(settings.subtitle);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => { setName(settings.platformName); setSubtitle(settings.subtitle); }, [settings]);
+
+  async function handleSave() {
+    setSaving(true);
+    await updateSettings({ platformName: name, subtitle });
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  return (
+    <div className="mb-6 bg-card border border-border/50 rounded-2xl shadow-sm overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-muted/40 transition-colors"
+      >
+        <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+          <Sparkles className="w-4 h-4 text-primary" />
+        </div>
+        <div className="flex-1">
+          <span className="font-semibold text-sm text-foreground">Datos de la plataforma</span>
+          <span className="ml-2 text-xs text-muted-foreground">{settings.platformName}</span>
+        </div>
+        <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="border-t border-border/50 p-5 space-y-4">
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+              Nombre de la plataforma / institución
+            </label>
+            <input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Ej: Preuniversitario Los Andes"
+              className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+              Subtítulo (opcional, se muestra en la portada)
+            </label>
+            <input
+              value={subtitle}
+              onChange={e => setSubtitle(e.target.value)}
+              placeholder="Ej: Gestión de horarios y clases"
+              className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving || !name.trim()}
+            className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+          >
+            {saving ? "Guardando..." : saved ? "✓ Guardado" : "Guardar"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const { horarioId, horario, horarioList, reloadHorarios } = useHorario();
   const [allData, setAllData] = useState<ClassEntry[]>([]);
@@ -274,7 +347,7 @@ export default function AdminPage() {
 
   const [editingCode, setEditingCode] = useState<string | null>(null);
   const [editingSemester, setEditingSemester] = useState<string>("PRIMER");
-  const [editingHorario, setEditingHorario] = useState<string>("TEMUCO");
+  const [editingHorario, setEditingHorario] = useState<string>("");
   const [editForm, setEditForm] = useState({ ...emptyForm, sede: "" });
   const [savingEdit, setSavingEdit] = useState(false);
   const [editError, setEditError] = useState("");
@@ -597,7 +670,7 @@ export default function AdminPage() {
     setEditError("");
     setEditingCode(entry.classCode);
     setEditingSemester(entry.semester ?? "PRIMER");
-    setEditingHorario(entry.horario ?? "TEMUCO");
+    setEditingHorario(entry.horario ?? horarioId);
   }
 
   async function handleSaveEdit() {
@@ -751,6 +824,8 @@ export default function AdminPage() {
             </button>
           </div>
         )}
+
+        <PlatformSettingsCard />
 
         {/* ── Gestión de Campus ─────────────────────────────────── */}
         <div className="mb-6 bg-card border border-border/50 rounded-2xl shadow-sm overflow-hidden">
@@ -1165,7 +1240,7 @@ export default function AdminPage() {
                   {importResult.perCampus && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                       {Object.entries(importResult.perCampus).map(([id, data]) => {
-                        const labels: Record<string, string> = { TEMUCO: "Temuco", ALMAGRO: "D. Almagro", VILLARRICA: "Villarrica", AV_ALEMANIA: "Av. Alemania" };
+                        const labels: Record<string, string> = Object.fromEntries(horarioList.map(h => [h.id, h.label]));
                         return (
                           <div key={id} className="bg-white border border-emerald-200 rounded-xl px-3 py-2">
                             <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">{labels[id] ?? id}</p>
@@ -1628,7 +1703,7 @@ export default function AdminPage() {
                       {filteredList.map(entry => {
                         const rowKey = `${entry.classCode}|${entry.semester ?? "PRIMER"}`;
                         const badge = COURSE_COLORS[entry.course] ?? "bg-slate-100 text-slate-800 border-slate-200";
-                        const confirmKey = `${entry.classCode}|${entry.semester ?? "PRIMER"}|${entry.horario ?? "TEMUCO"}`;
+                        const confirmKey = `${entry.classCode}|${entry.semester ?? "PRIMER"}|${entry.horario ?? horarioId}`;
                         const isDeleting = deletingKey === confirmKey;
                         const isEditing = editingCode === entry.classCode && editingSemester === (entry.semester ?? "PRIMER");
                         const semBadge = entry.semester === "SEGUNDO"
@@ -1676,7 +1751,7 @@ export default function AdminPage() {
                                   <div className="flex items-center gap-1.5 bg-destructive/5 border border-destructive/20 rounded-xl px-2.5 py-1.5">
                                     <span className="text-[11px] font-semibold text-destructive whitespace-nowrap">¿Eliminar?</span>
                                     <button
-                                      onClick={() => { handleDelete(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? "TEMUCO"); setConfirmDeleteCode(null); }}
+                                      onClick={() => { handleDelete(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? horarioId); setConfirmDeleteCode(null); }}
                                       disabled={isDeleting}
                                       className="px-2 py-0.5 text-[11px] font-bold bg-destructive text-white rounded-lg hover:bg-destructive/80 transition-colors disabled:opacity-60"
                                     >

@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, Settings, Sparkles } from "lucide-react";
 import { useHorario } from "@/context/HorarioContext";
+import { useSettings } from "@/context/SettingsContext";
 
 const ACCENT_BADGE: Record<string, string> = {
   violet: "bg-violet-100 text-violet-700",
@@ -36,7 +37,8 @@ const ACCENT_BORDER: Record<string, string> = {
 };
 
 export default function HomePage() {
-  const { setHorarioId, horarioList } = useHorario();
+  const { setHorarioId, horarioList, horariosLoading } = useHorario();
+  const { settings } = useSettings();
   const [, navigate] = useLocation();
 
   function handleSelect(id: string) {
@@ -47,6 +49,34 @@ export default function HomePage() {
   const cols = horarioList.length <= 2 ? "lg:grid-cols-2" :
                horarioList.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4";
 
+  // Estado vacío: la plataforma recién instalada, sin campus configurados aún
+  if (!horariosLoading && horarioList.length === 0) {
+    return (
+      <div className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center pb-24 md:pb-0">
+        <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wide mb-6 border border-primary/20">
+            <Sparkles className="w-4 h-4" />
+            Bienvenido a tu plataforma
+          </div>
+          <h1 className="text-4xl md:text-6xl font-display font-extrabold text-foreground mb-4 leading-tight">
+            {settings.platformName}
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-10">
+            Todavía no hay campus configurados. Empieza creando tu primer campus con
+            sus sedes; después podrás agregar clases, alumnos, equipo y todo lo demás.
+          </p>
+          <button
+            onClick={() => navigate("/admin")}
+            className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground rounded-2xl font-bold text-base shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all"
+          >
+            <Settings className="w-5 h-5" />
+            Configurar mi plataforma
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex flex-col justify-center pb-24 md:pb-0">
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
@@ -55,14 +85,11 @@ export default function HomePage() {
           Selecciona tu campus
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-display font-extrabold text-foreground mb-4 leading-tight">
-          Sistema de{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-            Horarios
-          </span>
+        <h1 className="text-5xl md:text-7xl font-display font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+          {settings.platformName}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-          Elige el campus que quieres gestionar para acceder a su grilla, matrícula y guías de impresión.
+          {settings.subtitle || "Elige el campus que quieres gestionar para acceder a su grilla, matrícula y guías de impresión."}
         </p>
       </div>
 

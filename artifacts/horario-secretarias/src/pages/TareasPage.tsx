@@ -36,12 +36,11 @@ interface Task {
   createdAt: string;
 }
 
-const SEDES = [
-  { id: "TEMUCO", label: "Temuco" },
-  { id: "ALMAGRO", label: "D. Almagro" },
-  { id: "VILLARRICA", label: "Villarrica" },
-  { id: "AV_ALEMANIA", label: "Av. Alemania" },
-];
+// Lista de campus dinámica, tomada de los que el cliente configuró en Admin
+function useCampusList(): { id: string; label: string }[] {
+  const { horarioList } = useHorario();
+  return horarioList.map(h => ({ id: h.id, label: h.label }));
+}
 
 const STATUSES: { value: Status; label: string; icon: React.ElementType; color: string; bg: string }[] = [
   { value: "PENDIENTE", label: "Pendiente", icon: AlertCircle, color: "text-slate-500", bg: "bg-slate-100 dark:bg-slate-800" },
@@ -120,7 +119,8 @@ function TaskCard({
 
   const prio = PRIORITIES.find((p) => p.value === task.priority)!;
   const statusInfo = STATUSES.find((s) => s.value === task.status)!;
-  const sede = SEDES.find((s) => s.id === task.horarioId);
+  const campusList = useCampusList();
+  const sede = campusList.find((s) => s.id === task.horarioId);
   const badge = deadlineBadge(task.deadline);
 
   const handleAddItem = () => {
@@ -319,9 +319,10 @@ function CreateTaskModal({
   onCreate: (task: Task) => void;
 }) {
   const { currentUser } = useCurrentUser();
+  const campusList = useCampusList();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [horarioId, setHorarioId] = useState(isAdmin ? "TEMUCO" : currentHorarioId);
+  const [horarioId, setHorarioId] = useState(isAdmin ? (campusList[0]?.id ?? currentHorarioId) : currentHorarioId);
   const [assignedTo, setAssignedTo] = useState(currentUser?.name ?? "");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState<Priority>("MEDIA");
@@ -448,7 +449,7 @@ function CreateTaskModal({
                     onChange={(e) => setHorarioId(e.target.value)}
                     className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
-                    {SEDES.map((s) => (
+                    {campusList.map((s) => (
                       <option key={s.id} value={s.id}>{s.label}</option>
                     ))}
                   </select>
@@ -831,7 +832,8 @@ export default function TareasPage() {
   }).length;
   const completedCount = tasks.filter((t) => t.status === "COMPLETADA").length;
 
-  const sede = SEDES.find((s) => s.id === horarioId);
+  const campusList = useCampusList();
+  const sede = campusList.find((s) => s.id === horarioId);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
@@ -1003,7 +1005,7 @@ export default function TareasPage() {
       {/* Per-campus summary (admin only) */}
       {adminMode && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          {SEDES.map((s) => {
+          {campusList.map((s) => {
             const count = tasks.filter((t) => t.horarioId === s.id).length;
             const done = tasks.filter((t) => t.horarioId === s.id && t.status === "COMPLETADA").length;
             return (
@@ -1044,7 +1046,7 @@ export default function TareasPage() {
             className="px-3 py-1.5 bg-muted rounded-xl text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-primary/30"
           >
             <option value="TODAS">Todas las sedes</option>
-            {SEDES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            {campusList.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>
         )}
 

@@ -52,55 +52,9 @@ export interface HorarioConfig {
   isSystem?: boolean;
 }
 
-export const HORARIOS: Record<string, HorarioConfig> = {
-  TEMUCO: {
-    id: 'TEMUCO',
-    label: 'Temuco',
-    subtitle: 'Las Encinas · Inés de Suárez',
-    sedes: ['LAS ENCINAS', 'INES DE SUAREZ'],
-    sedesInfo: [
-      { name: 'LAS ENCINAS',    displayName: 'Las Encinas',    maxSalas: 7 },
-      { name: 'INES DE SUAREZ', displayName: 'Inés de Suárez', maxSalas: 5 },
-    ],
-    gradient: 'from-violet-500 to-purple-600',
-    accentColor: 'violet',
-    emoji: '🏙️',
-    isSystem: true,
-  },
-  ALMAGRO: {
-    id: 'ALMAGRO',
-    label: 'D. Almagro',
-    subtitle: 'Diego de Almagro',
-    sedes: ['D. ALMAGRO'],
-    sedesInfo: [{ name: 'D. ALMAGRO', displayName: 'D. Almagro', maxSalas: 6 }],
-    gradient: 'from-blue-500 to-indigo-600',
-    accentColor: 'blue',
-    emoji: '📍',
-    isSystem: true,
-  },
-  VILLARRICA: {
-    id: 'VILLARRICA',
-    label: 'Villarrica',
-    subtitle: 'Sede Villarrica',
-    sedes: ['VILLARRICA'],
-    sedesInfo: [{ name: 'VILLARRICA', displayName: 'Villarrica', maxSalas: 4 }],
-    gradient: 'from-teal-500 to-emerald-600',
-    accentColor: 'teal',
-    emoji: '🌿',
-    isSystem: true,
-  },
-  AV_ALEMANIA: {
-    id: 'AV_ALEMANIA',
-    label: 'Av. Alemania',
-    subtitle: 'Sede Av. Alemania',
-    sedes: ['AV. ALEMANIA'],
-    sedesInfo: [{ name: 'AV. ALEMANIA', displayName: 'Av. Alemania', maxSalas: 4 }],
-    gradient: 'from-orange-500 to-rose-500',
-    accentColor: 'orange',
-    emoji: '🌆',
-    isSystem: true,
-  },
-};
+// La plataforma parte sin campus predefinidos: cada cliente crea los suyos
+// desde Admin → Gestionar Campus. Este objeto queda vacío a propósito.
+export const HORARIOS: Record<string, HorarioConfig> = {};
 
 export const HORARIO_LIST: HorarioConfig[] = Object.values(HORARIOS);
 

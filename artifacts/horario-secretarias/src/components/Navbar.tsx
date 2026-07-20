@@ -6,6 +6,7 @@ import {
   SlidersHorizontal, RotateCcw, Check,
 } from "lucide-react";
 import { useHorario } from "@/context/HorarioContext";
+import { useSettings } from "@/context/SettingsContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { useCurrentUser, UserAvatar } from "@/context/UserContext";
 import {
@@ -121,6 +122,7 @@ export default function Navbar() {
   const [navConfig, setNavConfig] = useState<NavItem[]>(() => getNavConfig());
 
   const { horario } = useHorario();
+  const { settings } = useSettings();
   const { notifications } = useNotifications();
   const { currentUser, clearUser } = useCurrentUser();
 
@@ -148,7 +150,7 @@ export default function Navbar() {
               </div>
               <div className="hidden sm:flex flex-col leading-tight">
                 <span className="font-display font-bold text-xl tracking-tight text-foreground">
-                  {horario?.label}
+                  {horario?.id ? horario.label : settings.platformName}
                 </span>
               </div>
             </Link>

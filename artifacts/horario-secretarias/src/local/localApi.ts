@@ -5,9 +5,6 @@
 // aquí mismo, sin salir a internet. Importar este módulo (una vez, al inicio
 // de main.tsx) instala los interceptores.
 // ─────────────────────────────────────────────────────────────────────────────
-import { HORARIOS } from "@/data/schedule";
-import seedClasses from "./seedClasses.json";
-
 const PREFIX = "htdb:";
 const SEED_MARKER = `${PREFIX}seeded:v1`;
 
@@ -43,51 +40,9 @@ const nowIso = () => new Date().toISOString();
 function seedIfNeeded() {
   if (localStorage.getItem(SEED_MARKER)) return;
 
-  // Campus del sistema, desde la configuración estática del frontend
-  const horarios = Object.values(HORARIOS).map((h, i) => ({
-    id: h.id,
-    name: h.label,
-    subtitle: h.subtitle,
-    emoji: h.emoji,
-    gradient: h.gradient,
-    accentColor: h.accentColor,
-    isSystem: true,
-    sortOrder: i + 1,
-    sedes: h.sedesInfo ?? h.sedes.map(name => ({ name, displayName: name, maxSalas: 6 })),
-  }));
-  save("horarios", horarios);
-
-  // Horario de clases de ejemplo (campus TEMUCO, primer semestre)
-  const classes: Row[] = [];
-  const students: Row[] = [];
-  for (const entry of seedClasses as Row[]) {
-    classes.push({
-      classCode: entry.classCode,
-      horario: "TEMUCO",
-      day: entry.day,
-      time: entry.time,
-      sede: entry.sede,
-      sala: entry.sala,
-      teacher: entry.teacher,
-      course: entry.course,
-      semester: "PRIMER",
-      createdAt: nowIso(),
-    });
-    for (const studentName of entry.students ?? []) {
-      students.push({
-        id: nextId("students"),
-        classCode: entry.classCode,
-        classSemester: "PRIMER",
-        classHorario: "TEMUCO",
-        studentName,
-        createdAt: nowIso(),
-      });
-    }
-  }
-  save("classes", classes);
-  save("students", students);
-
-  // Estados de citas de orientación por defecto (editables en la app)
+  // La plataforma parte vacía: cada cliente crea sus campus, sedes y clases
+  // desde Admin. Solo se siembran los estados de citas de orientación
+  // (editables en la app).
   const estados = [
     { tipo: "confirma", label: "pendiente", color: "#94a3b8", orden: 1 },
     { tipo: "confirma", label: "confirmada", color: "#22c55e", orden: 2 },
@@ -290,6 +245,32 @@ const notFound = (msg = "No encontrado") => json({ error: msg }, 404);
 
 route("GET", "/api/ping", () => json({ ok: true }));
 route("GET", "/api/healthz", () => json({ status: "ok" }));
+
+// ─── Rutas: configuración de la plataforma ───────────────────────────────────
+
+const DEFAULT_SETTINGS = {
+  platformName: "Mi Plataforma de Horarios",
+  subtitle: "Gestión de horarios, clases y equipo",
+};
+
+function loadSettings() {
+  try {
+    return { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(`${PREFIX}settings`) ?? "{}") };
+  } catch {
+    return { ...DEFAULT_SETTINGS };
+  }
+}
+
+route("GET", "/api/settings", () => json(loadSettings()));
+
+route("PATCH", "/api/settings", ({ body }) => {
+  const current = loadSettings();
+  if (body?.platformName !== undefined) current.platformName = String(body.platformName).trim() || DEFAULT_SETTINGS.platformName;
+  if (body?.subtitle !== undefined) current.subtitle = String(body.subtitle).trim();
+  localStorage.setItem(`${PREFIX}settings`, JSON.stringify(current));
+  emit("settings", { type: "settings_changed", settings: current });
+  return json(current);
+});
 
 route("GET", "/api/schedule/presence", () => json(getActiveSessions()));
 route("POST", "/api/schedule/presence", ({ body }) => {

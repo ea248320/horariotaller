@@ -9,9 +9,23 @@ interface HorarioContextValue {
   horarioList: HorarioConfig[];
   horariosMap: Record<string, HorarioConfig>;
   reloadHorarios: () => Promise<void>;
+  /** true mientras se carga la lista inicial de campus */
+  horariosLoading: boolean;
 }
 
 const HorarioContext = createContext<HorarioContextValue | null>(null);
+
+// Campus "vacío" usado mientras el cliente aún no crea ninguno.
+const EMPTY_HORARIO: HorarioConfig = {
+  id: "",
+  label: "Sin campus",
+  subtitle: "Crea tu primer campus en Admin",
+  sedes: [],
+  sedesInfo: [],
+  gradient: "from-violet-500 to-purple-600",
+  accentColor: "violet",
+  emoji: "🏫",
+};
 
 interface ApiHorario {
   id: string;
@@ -57,25 +71,27 @@ function getInitialHorario(): HorarioId {
   if (urlParam) return urlParam as HorarioId;
   const stored = sessionStorage.getItem("selected-horario");
   if (stored) return stored as HorarioId;
-  return "TEMUCO";
+  return "";
 }
 
 function updateUrlCampus(id: string) {
   const url = new URL(window.location.href);
-  url.searchParams.set("campus", id);
+  if (id) url.searchParams.set("campus", id);
+  else url.searchParams.delete("campus");
   window.history.replaceState({}, "", url.toString());
 }
 
 export function HorarioProvider({ children }: { children: ReactNode }) {
   const [horariosMap, setHorariosMap] = useState<Record<string, HorarioConfig>>(HORARIOS);
   const [horarioList, setHorarioList] = useState<HorarioConfig[]>(Object.values(HORARIOS));
+  const [horariosLoading, setHorariosLoading] = useState(true);
 
   const [horarioId, setHorarioIdState] = useState<HorarioId>(getInitialHorario);
 
   // Memoizado para que no cambie de referencia en cada render — evita que
   // efectos que dependen de horario.sedes se disparen innecesariamente.
   const horario = useMemo(
-    () => horariosMap[horarioId] ?? horariosMap["TEMUCO"] ?? Object.values(horariosMap)[0],
+    () => horariosMap[horarioId] ?? Object.values(horariosMap)[0] ?? EMPTY_HORARIO,
     [horariosMap, horarioId]
   );
 
@@ -86,13 +102,16 @@ export function HorarioProvider({ children }: { children: ReactNode }) {
       setHorarioList(list);
       setHorariosMap(map);
       if (!map[horarioId]) {
-        const first = list[0]?.id ?? "TEMUCO";
+        const first = list[0]?.id ?? "";
         setHorarioIdState(first as HorarioId);
-        sessionStorage.setItem("selected-horario", first);
+        if (first) sessionStorage.setItem("selected-horario", first);
+        else sessionStorage.removeItem("selected-horario");
         updateUrlCampus(first);
       }
     } catch {
-      // silently use static fallback
+      // sin datos: la lista queda vacía
+    } finally {
+      setHorariosLoading(false);
     }
   }
 
@@ -108,7 +127,7 @@ export function HorarioProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <HorarioContext.Provider value={{ horarioId, horario, setHorarioId, horarioList, horariosMap, reloadHorarios }}>
+    <HorarioContext.Provider value={{ horarioId, horario, setHorarioId, horarioList, horariosMap, reloadHorarios, horariosLoading }}>
       {children}
     </HorarioContext.Provider>
   );

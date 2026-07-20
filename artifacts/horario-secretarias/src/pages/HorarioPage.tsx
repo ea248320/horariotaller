@@ -304,7 +304,7 @@ function DetailPanel({
     setSavingSala(true);
     setSalaError("");
     try {
-      const result = await apiUpdateSala(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? "TEMUCO", num);
+      const result = await apiUpdateSala(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? horarioId, num);
       if (result.error) { setSalaError(result.error); }
       else { setEditingSala(false); onStudentChange(); }
     } catch { setSalaError("Error de conexión"); }
@@ -347,7 +347,7 @@ function DetailPanel({
     setAdding(true);
     setAddError("");
     try {
-      const result = await apiAddStudent(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? "TEMUCO", name);
+      const result = await apiAddStudent(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? horarioId, name);
       if (result.error === "class_full") {
         setAddError("La clase ya tiene 7 alumnos.");
       } else if (result.error) {
@@ -416,7 +416,7 @@ function DetailPanel({
   async function handleRemove(studentName: string) {
     setRemovingStudent(studentName);
     try {
-      const result = await apiRemoveStudent(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? "TEMUCO", studentName);
+      const result = await apiRemoveStudent(entry.classCode, entry.semester ?? "PRIMER", entry.horario ?? horarioId, studentName);
       if (result.error) {
         setAddError(result.error ?? "Error al eliminar alumno.");
         return;
