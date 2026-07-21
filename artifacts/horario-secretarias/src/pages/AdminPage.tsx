@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { UserAvatar, AVAILABLE_COLORS, USER_COLORS } from "@/context/UserContext";
 import {
-  DAYS, DAY_LABELS, TIME_SLOTS, COURSE_FULL_NAMES,
+  DAYS, ALL_DAYS, DAY_LABELS, TIME_SLOTS, COURSE_FULL_NAMES,
   type ClassEntry,
 } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
@@ -237,23 +237,92 @@ function CourseCombobox({
   );
 }
 
-// ─── Datos de la plataforma (nombre configurable por el cliente) ──────────────
+// ─── Datos de la plataforma (configuración vendible por cliente) ─────────────
 function PlatformSettingsCard() {
   const { settings, updateSettings } = useSettings();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(settings.platformName);
   const [subtitle, setSubtitle] = useState(settings.subtitle);
+  const [days, setDays] = useState<string[]>(settings.days);
+  const [slots, setSlots] = useState<string[]>(settings.timeSlots);
+  const [newSlot, setNewSlot] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [confirmReset, setConfirmReset] = useState(false);
+  const restoreInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { setName(settings.platformName); setSubtitle(settings.subtitle); }, [settings]);
+  useEffect(() => {
+    setName(settings.platformName);
+    setSubtitle(settings.subtitle);
+    setDays(settings.days);
+    setSlots(settings.timeSlots);
+  }, [settings]);
+
+  const gridChanged =
+    JSON.stringify(days) !== JSON.stringify(settings.days) ||
+    JSON.stringify(slots) !== JSON.stringify(settings.timeSlots);
+
+  function toggleDay(d: string) {
+    setDays(prev => prev.includes(d)
+      ? (prev.length > 1 ? prev.filter(x => x !== d) : prev)
+      : ALL_DAYS.filter(x => [...prev, d].includes(x)));
+  }
+
+  function addSlot() {
+    const s = newSlot.trim();
+    if (!s || slots.includes(s)) return;
+    setSlots(prev => [...prev, s]);
+    setNewSlot("");
+  }
 
   async function handleSave() {
     setSaving(true);
-    await updateSettings({ platformName: name, subtitle });
+    setError("");
+    const err = await updateSettings({ platformName: name, subtitle, days, timeSlots: slots });
     setSaving(false);
+    if (err) { setError(err); return; }
+    if (gridChanged) {
+      // Los días/franjas se leen al cargar la app: recargar para aplicarlos
+      window.location.reload();
+      return;
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function handleBackup() {
+    const res = await fetch(apiUrl("/api/backup"));
+    const data = await res.json();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `respaldo_plataforma_${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleRestoreFile(file: File) {
+    setError("");
+    try {
+      const parsed = JSON.parse(await file.text());
+      const res = await fetch(apiUrl("/api/backup/restore"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data?.error ?? "No se pudo restaurar el respaldo"); return; }
+      window.location.reload();
+    } catch {
+      setError("El archivo no es un respaldo válido");
+    }
+  }
+
+  async function handleReset() {
+    await fetch(apiUrl("/api/reset"), { method: "DELETE" });
+    window.location.reload();
   }
 
   return (
@@ -273,36 +342,143 @@ function PlatformSettingsCard() {
       </button>
 
       {open && (
-        <div className="border-t border-border/50 p-5 space-y-4">
+        <div className="border-t border-border/50 p-5 space-y-5">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+                Nombre de la plataforma / institución
+              </label>
+              <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Ej: Preuniversitario Los Andes"
+                className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+                Subtítulo (se muestra en la portada)
+              </label>
+              <input
+                value={subtitle}
+                onChange={e => setSubtitle(e.target.value)}
+                placeholder="Ej: Gestión de horarios y clases"
+                className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
+          </div>
+
           <div>
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
-              Nombre de la plataforma / institución
+              Días con clases
             </label>
-            <input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Ej: Preuniversitario Los Andes"
-              className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
+            <div className="flex flex-wrap gap-1.5">
+              {ALL_DAYS.map(d => (
+                <button
+                  key={d}
+                  onClick={() => toggleDay(d)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+                    days.includes(d)
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {DAY_LABELS[d]}
+                </button>
+              ))}
+            </div>
           </div>
+
           <div>
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
-              Subtítulo (opcional, se muestra en la portada)
+              Franjas horarias de la grilla
             </label>
-            <input
-              value={subtitle}
-              onChange={e => setSubtitle(e.target.value)}
-              placeholder="Ej: Gestión de horarios y clases"
-              className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {slots.map(t => (
+                <span key={t} className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 bg-muted rounded-xl text-xs font-semibold text-foreground">
+                  {t}
+                  <button
+                    onClick={() => slots.length > 1 && setSlots(prev => prev.filter(x => x !== t))}
+                    className="p-0.5 rounded-md hover:bg-background text-muted-foreground hover:text-red-600"
+                    title="Quitar franja"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={newSlot}
+                onChange={e => setNewSlot(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") addSlot(); }}
+                placeholder="Ej: 08.00 - 09.00"
+                className="flex-1 max-w-xs px-3 py-2 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+              <button
+                onClick={addSlot}
+                className="px-3 py-2 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/70 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            {gridChanged && (
+              <p className="text-[11px] text-amber-600 mt-1.5">
+                Al guardar cambios de días o franjas la página se recargará para aplicar la nueva grilla.
+              </p>
+            )}
           </div>
-          <button
-            onClick={handleSave}
-            disabled={saving || !name.trim()}
-            className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
-          >
-            {saving ? "Guardando..." : saved ? "✓ Guardado" : "Guardar"}
-          </button>
+
+          {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <button
+              onClick={handleSave}
+              disabled={saving || !name.trim()}
+              className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+            >
+              {saving ? "Guardando..." : saved ? "✓ Guardado" : "Guardar"}
+            </button>
+
+            <span className="flex-1" />
+
+            <button
+              onClick={handleBackup}
+              className="px-4 py-2.5 bg-muted rounded-xl font-semibold text-sm hover:bg-muted/70 transition-colors"
+              title="Descarga un archivo con todos los datos de la plataforma"
+            >
+              Descargar respaldo
+            </button>
+            <button
+              onClick={() => restoreInputRef.current?.click()}
+              className="px-4 py-2.5 bg-muted rounded-xl font-semibold text-sm hover:bg-muted/70 transition-colors"
+              title="Restaura los datos desde un archivo de respaldo"
+            >
+              Restaurar respaldo
+            </button>
+            <input
+              ref={restoreInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={e => { const f = e.target.files?.[0]; if (f) handleRestoreFile(f); e.target.value = ""; }}
+            />
+            {confirmReset ? (
+              <span className="inline-flex items-center gap-1.5 text-sm">
+                <span className="text-red-600 font-semibold">¿Borrar TODO?</span>
+                <button onClick={handleReset} className="px-2.5 py-1.5 text-xs font-bold bg-red-600 text-white rounded-lg hover:bg-red-700">Sí, borrar</button>
+                <button onClick={() => setConfirmReset(false)} className="px-2.5 py-1.5 text-xs font-bold bg-muted rounded-lg">Cancelar</button>
+              </span>
+            ) : (
+              <button
+                onClick={() => setConfirmReset(true)}
+                className="px-4 py-2.5 text-red-600 rounded-xl font-semibold text-sm hover:bg-red-50 transition-colors"
+                title="Borra todos los datos y deja la plataforma como nueva"
+              >
+                Restablecer plataforma
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

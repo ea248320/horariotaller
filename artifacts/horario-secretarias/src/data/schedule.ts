@@ -11,16 +11,21 @@ export interface ClassEntry {
   semester?: string;
 }
 
-export const DAYS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'];
+export const ALL_DAYS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
+
 export const DAY_LABELS: Record<string, string> = {
   LUNES: 'Lunes',
   MARTES: 'Martes',
   MIERCOLES: 'Miércoles',
   JUEVES: 'Jueves',
   VIERNES: 'Viernes',
+  SABADO: 'Sábado',
+  DOMINGO: 'Domingo',
 };
 
-export const TIME_SLOTS = [
+export const DEFAULT_DAYS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'];
+
+export const DEFAULT_TIME_SLOTS = [
   '09.15 - 10.15',
   '10:30 - 11:30',
   '11.45 - 12.45',
@@ -29,6 +34,28 @@ export const TIME_SLOTS = [
   '18.00 - 19.00',
   '19.15 - 20.15',
 ];
+
+// Días y franjas horarias configurables por el cliente (Admin → Datos de la
+// plataforma). Se leen de la configuración local al cargar la app; al
+// guardarse cambios la app se recarga para que toda la grilla se actualice.
+function readGridSettings(): { days: string[]; timeSlots: string[] } {
+  try {
+    const s = JSON.parse(localStorage.getItem('htdb:settings') ?? '{}');
+    const days = Array.isArray(s.days) && s.days.length > 0
+      ? ALL_DAYS.filter(d => s.days.includes(d))
+      : DEFAULT_DAYS;
+    const timeSlots = Array.isArray(s.timeSlots) && s.timeSlots.length > 0
+      ? s.timeSlots.map(String)
+      : DEFAULT_TIME_SLOTS;
+    return { days, timeSlots };
+  } catch {
+    return { days: DEFAULT_DAYS, timeSlots: DEFAULT_TIME_SLOTS };
+  }
+}
+
+const gridSettings = readGridSettings();
+export const DAYS = gridSettings.days;
+export const TIME_SLOTS = gridSettings.timeSlots;
 
 export const SEDES = ['LAS ENCINAS', 'INES DE SUAREZ'];
 

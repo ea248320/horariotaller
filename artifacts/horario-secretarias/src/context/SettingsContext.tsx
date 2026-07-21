@@ -1,19 +1,25 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { apiUrl } from "@/lib/api";
+import { DEFAULT_DAYS, DEFAULT_TIME_SLOTS } from "@/data/schedule";
 
 export interface PlatformSettings {
   platformName: string;
   subtitle: string;
+  days: string[];
+  timeSlots: string[];
 }
 
 const DEFAULTS: PlatformSettings = {
   platformName: "Mi Plataforma de Horarios",
   subtitle: "Gestión de horarios, clases y equipo",
+  days: DEFAULT_DAYS,
+  timeSlots: DEFAULT_TIME_SLOTS,
 };
 
 interface SettingsContextValue {
   settings: PlatformSettings;
-  updateSettings: (patch: Partial<PlatformSettings>) => Promise<void>;
+  /** Devuelve un mensaje de error, o null si se guardó bien */
+  updateSettings: (patch: Partial<PlatformSettings>) => Promise<string | null>;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -24,7 +30,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetch(apiUrl("/api/settings"))
       .then(r => r.json())
-      .then(s => { if (s?.platformName) setSettings(s); })
+      .then(s => { if (s?.platformName) setSettings({ ...DEFAULTS, ...s }); })
       .catch(() => {});
   }, []);
 
@@ -32,13 +38,20 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     document.title = settings.platformName;
   }, [settings.platformName]);
 
-  const updateSettings = useCallback(async (patch: Partial<PlatformSettings>) => {
-    const res = await fetch(apiUrl("/api/settings"), {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    });
-    if (res.ok) setSettings(await res.json());
+  const updateSettings = useCallback(async (patch: Partial<PlatformSettings>): Promise<string | null> => {
+    try {
+      const res = await fetch(apiUrl("/api/settings"), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      const data = await res.json();
+      if (!res.ok) return data?.error ?? "No se pudo guardar la configuración";
+      setSettings({ ...DEFAULTS, ...data });
+      return null;
+    } catch {
+      return "No se pudo guardar la configuración";
+    }
   }, []);
 
   return (

@@ -22,7 +22,13 @@ function load(table: string): Row[] {
 }
 
 function save(table: string, rows: Row[]) {
-  localStorage.setItem(PREFIX + table, JSON.stringify(rows));
+  try {
+    localStorage.setItem(PREFIX + table, JSON.stringify(rows));
+  } catch (err) {
+    // Cuota de localStorage llena u otro fallo de escritura
+    console.error(`[local-api] No se pudo guardar "${table}":`, err);
+    throw new Error("El almacenamiento del navegador está lleno. Exporta un respaldo y libera espacio.");
+  }
 }
 
 function nextId(table: string): number {
@@ -134,6 +140,7 @@ const MAX_STUDENTS = 8;
 
 const DAY_TOKEN_MAP: Record<string, string> = {
   LUN: "LUNES", MAR: "MARTES", MIE: "MIERCOLES", JUE: "JUEVES", VIE: "VIERNES",
+  SAB: "SABADO", DOM: "DOMINGO",
 };
 const TIME_SLOT_MAP: Record<string, string> = {
   "09.15": "09.15 - 10.15",
@@ -147,6 +154,7 @@ const TIME_SLOT_MAP: Record<string, string> = {
 const DAY_TOKENS = Object.keys(DAY_TOKEN_MAP);
 const DAY_SHORT: Record<string, string> = {
   LUNES: "LUN", MARTES: "MAR", MIERCOLES: "MIE", JUEVES: "JUE", VIERNES: "VIE",
+  SABADO: "SAB", DOMINGO: "DOM",
 };
 
 function parseClassCode(code: string): { course: string; day: string; time: string; teacher: string } | null {
@@ -181,7 +189,6 @@ const HORARIO_NIVEL: Record<string, string> = {
   VILLARRICA: "SEDE VILLARRICA",
   AV_ALEMANIA: "SEDE AV. ALEMANIA",
 };
-const ALL_HORARIO_IDS = ["TEMUCO", "ALMAGRO", "VILLARRICA", "AV_ALEMANIA"];
 
 function normalizeSede(raw: string, fallback: string): string {
   const s = raw.trim().toUpperCase().replace(/^SEDE\s+/, "");
@@ -266,9 +273,21 @@ route("GET", "/api/healthz", () => json({ status: "ok" }));
 
 // ─── Rutas: configuración de la plataforma ───────────────────────────────────
 
+const ALL_DAYS = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
+
 const DEFAULT_SETTINGS = {
   platformName: "Mi Plataforma de Horarios",
   subtitle: "Gestión de horarios, clases y equipo",
+  days: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"],
+  timeSlots: [
+    "09.15 - 10.15",
+    "10:30 - 11:30",
+    "11.45 - 12.45",
+    "15.30 - 16.30",
+    "16.45 - 17.45",
+    "18.00 - 19.00",
+    "19.15 - 20.15",
+  ],
 };
 
 function loadSettings() {
@@ -285,9 +304,65 @@ route("PATCH", "/api/settings", ({ body }) => {
   const current = loadSettings();
   if (body?.platformName !== undefined) current.platformName = String(body.platformName).trim() || DEFAULT_SETTINGS.platformName;
   if (body?.subtitle !== undefined) current.subtitle = String(body.subtitle).trim();
+  if (body?.days !== undefined) {
+    const days = Array.isArray(body.days) ? ALL_DAYS.filter(d => body.days.includes(d)) : [];
+    if (days.length === 0) return json({ error: "Debe haber al menos un día activo" }, 400);
+    current.days = days;
+  }
+  if (body?.timeSlots !== undefined) {
+    const slots = Array.isArray(body.timeSlots)
+      ? body.timeSlots.map((t: unknown) => String(t).trim()).filter(Boolean)
+      : [];
+    if (slots.length === 0) return json({ error: "Debe haber al menos una franja horaria" }, 400);
+    if (new Set(slots).size !== slots.length) return json({ error: "Hay franjas horarias repetidas" }, 400);
+    current.timeSlots = slots;
+  }
   localStorage.setItem(`${PREFIX}settings`, JSON.stringify(current));
   emit("settings", { type: "settings_changed", settings: current });
   return json(current);
+});
+
+// ─── Rutas: respaldo, restauración y reinicio ────────────────────────────────
+
+function allDataKeys(): string[] {
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k?.startsWith(PREFIX)) keys.push(k);
+  }
+  return keys;
+}
+
+route("GET", "/api/backup", () => {
+  const data: Record<string, unknown> = {};
+  for (const k of allDataKeys()) {
+    try { data[k] = JSON.parse(localStorage.getItem(k) ?? "null"); }
+    catch { data[k] = localStorage.getItem(k); }
+  }
+  return json({
+    formato: "horariotaller-backup",
+    version: 1,
+    exportadoEn: nowIso(),
+    data,
+  });
+});
+
+route("POST", "/api/backup/restore", ({ body }) => {
+  if (body?.formato !== "horariotaller-backup" || typeof body?.data !== "object" || body.data === null) {
+    return json({ error: "El archivo no es un respaldo válido de esta plataforma" }, 400);
+  }
+  for (const k of allDataKeys()) localStorage.removeItem(k);
+  for (const [k, v] of Object.entries(body.data as Record<string, unknown>)) {
+    if (!k.startsWith(PREFIX)) continue;
+    localStorage.setItem(k, typeof v === "string" ? v : JSON.stringify(v));
+  }
+  localStorage.setItem(SEED_MARKER, "1");
+  return json({ ok: true });
+});
+
+route("DELETE", "/api/reset", () => {
+  for (const k of allDataKeys()) localStorage.removeItem(k);
+  return json({ ok: true });
 });
 
 route("GET", "/api/schedule/presence", () => json(getActiveSessions()));
@@ -523,9 +598,14 @@ route("POST", "/api/schedule/import", async ({ formData }) => {
   const allParseErrors: string[] = [];
   const perCampus: Record<string, { students: number; createdPrimer: number; createdSegundo: number }> = {};
 
-  for (const horarioId of ALL_HORARIO_IDS) {
-    const nivelFilter = (HORARIO_NIVEL[horarioId] ?? HORARIO_NIVEL.TEMUCO).toUpperCase();
-    const defaultSede = HORARIO_SEDES[horarioId]?.[0] ?? "LAS ENCINAS";
+  // Importar para los campus que el cliente configuró. La columna 0 (Nivel)
+  // del Excel debe decir "SEDE <NOMBRE DEL CAMPUS>" (los 4 campus del formato
+  // original siguen soportados vía HORARIO_NIVEL).
+  const storedHorarios = load("horarios");
+  for (const h of storedHorarios) {
+    const horarioId = h.id;
+    const nivelFilter = (HORARIO_NIVEL[horarioId] ?? `SEDE ${String(h.name).toUpperCase()}`).toUpperCase();
+    const defaultSede = h.sedes?.[0]?.name ?? HORARIO_SEDES[horarioId]?.[0] ?? String(h.name).toUpperCase();
     const matching = dataRows.filter(r => String(r[0]).trim().toUpperCase() === nivelFilter);
 
     type Parsed = { students: string[]; sala: number | null; sede: string };
@@ -1450,7 +1530,8 @@ async function dispatch(u: URL, init?: RequestInit): Promise<Response> {
       return await r.handler({ params, query: u.searchParams, body, formData });
     } catch (err) {
       console.error(`[local-api] ${method} ${u.pathname}:`, err);
-      return json({ error: "Error interno (local)" }, 500);
+      const msg = err instanceof Error && err.message ? err.message : "Error interno (local)";
+      return json({ error: msg }, 500);
     }
   }
   return json({ error: `Ruta local no implementada: ${method} ${u.pathname}` }, 404);
