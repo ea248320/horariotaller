@@ -13,6 +13,9 @@ regla se impone en la base de datos, no en la aplicación.
    y elimina las advertencias de rendimiento del Security Advisor).
 5. Repite con `migrations/0004_planes.sql` (planes/versiones: las cuentas nuevas
    nacen "pendientes" sin acceso; la dueña asigna el plan que activa los módulos).
+6. Repite con `migrations/0005_notificacion_email.sql` (te envía un correo cada
+   vez que se registra un cliente nuevo). Después de ejecutarla, sigue los pasos
+   del encabezado del archivo para conectar tu cuenta de Resend.
 
 Aplícalas siempre en orden numérico. Cada archivo nuevo (`0004`, `0005`…) es un
 cambio incremental: se ejecuta una vez y queda registrado en tu historial.
