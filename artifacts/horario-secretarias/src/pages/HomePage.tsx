@@ -1,7 +1,13 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { MapPin, ArrowRight, Settings, Sparkles } from "lucide-react";
+import { MapPin, ArrowRight, CalendarDays } from "lucide-react";
 import { useHorario } from "@/context/HorarioContext";
 import { useSettings } from "@/context/SettingsContext";
+import { apiUrl } from "@/lib/api";
+import { DAY_LABELS } from "@/data/schedule";
+import OnboardingChecklist from "@/components/OnboardingChecklist";
+
+const DAY_KEYS = ["DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
 
 const ACCENT_BADGE: Record<string, string> = {
   violet: "bg-violet-100 text-violet-700",
@@ -41,6 +47,24 @@ export default function HomePage() {
   const { settings } = useSettings();
   const [, navigate] = useLocation();
 
+  // Gancho diario "Hoy": cuántas clases hay hoy en total (razón para entrar cada día)
+  const [clasesHoy, setClasesHoy] = useState<number | null>(null);
+  const todayKey = DAY_KEYS[new Date().getDay()];
+  const todayLabel = DAY_LABELS[todayKey] ?? "";
+
+  useEffect(() => {
+    if (horarioList.length === 0) return;
+    let alive = true;
+    fetch(apiUrl("/api/schedule?horario=ALL"))
+      .then(r => r.json())
+      .then((data: Array<{ day: string }>) => {
+        if (!alive) return;
+        setClasesHoy(Array.isArray(data) ? data.filter(c => c.day === todayKey).length : 0);
+      })
+      .catch(() => { if (alive) setClasesHoy(null); });
+    return () => { alive = false; };
+  }, [horarioList.length, todayKey]);
+
   function handleSelect(id: string) {
     setHorarioId(id);
     navigate("/horarios");
@@ -49,51 +73,53 @@ export default function HomePage() {
   const cols = horarioList.length <= 2 ? "lg:grid-cols-2" :
                horarioList.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4";
 
-  // Estado vacío: la plataforma recién instalada, sin campus configurados aún
+  // Estado vacío: la plataforma recién instalada, sin campus configurados aún.
+  // Se muestra el asistente de activación para llegar rápido al primer valor.
   if (!horariosLoading && horarioList.length === 0) {
     return (
-      <div className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center pb-24 md:pb-0">
-        <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wide mb-6 border border-primary/20">
-            <Sparkles className="w-4 h-4" />
-            Bienvenido a tu plataforma
-          </div>
-          <h1 className="text-4xl md:text-6xl font-display font-extrabold text-foreground mb-4 leading-tight">
+      <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 py-10 pb-24 md:pb-10">
+        <div className="text-center mb-8 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-display font-extrabold text-foreground mb-3 leading-tight">
             {settings.platformName}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-10">
-            Todavía no hay campus configurados. Empieza creando tu primer campus con
-            sus sedes; después podrás agregar clases, alumnos, equipo y todo lo demás.
+          <p className="text-base md:text-lg text-muted-foreground">
+            Bienvenida 👋 Sigue estos pasos y en unos minutos tendrás tu horario funcionando.
           </p>
-          <button
-            onClick={() => navigate("/admin")}
-            className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground rounded-2xl font-bold text-base shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all"
-          >
-            <Settings className="w-5 h-5" />
-            Configurar mi plataforma
-          </button>
         </div>
+        <OnboardingChecklist />
       </div>
     );
   }
 
   return (
     <div className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex flex-col justify-center pb-24 md:pb-0">
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
-        <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wide mb-6 border border-primary/20">
-          <MapPin className="w-4 h-4" />
-          Selecciona tu campus
-        </div>
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 text-center w-full">
+        {/* Gancho diario: da una razón para entrar cada día */}
+        {clasesHoy !== null && clasesHoy > 0 && (
+          <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold mb-5">
+            <CalendarDays className="w-4 h-4" />
+            Hoy {todayLabel.toLowerCase()}: {clasesHoy} clase{clasesHoy !== 1 ? "s" : ""} en total
+          </div>
+        )}
 
         <h1 className="text-5xl md:text-7xl font-display font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
           {settings.platformName}
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
           {settings.subtitle || "Elige el campus que quieres gestionar para acceder a su grilla, matrícula y guías de impresión."}
         </p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      {/* Asistente de activación mientras la configuración no esté completa */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full mb-8">
+        <OnboardingChecklist />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
+        <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wide mb-6 border border-primary/20">
+          <MapPin className="w-4 h-4" />
+          Selecciona tu campus
+        </div>
         <div className={`grid grid-cols-1 sm:grid-cols-2 ${cols} gap-5`}>
           {horarioList.map(horario => {
             const badgeCls  = ACCENT_BADGE[horario.accentColor]  ?? "bg-muted text-muted-foreground";
