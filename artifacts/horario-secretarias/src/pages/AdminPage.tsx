@@ -11,6 +11,7 @@ import {
 } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
 import { useSettings } from "@/context/SettingsContext";
+import { useSemester } from "@/context/SemesterContext";
 import { downloadBackup, shouldRemindBackup, snoozeBackupReminder } from "@/lib/backup";
 import { apiUrl } from "@/lib/api";
 
@@ -511,6 +512,9 @@ function PlatformSettingsCard() {
 
 export default function AdminPage() {
   const { horarioId, horario, horarioList, reloadHorarios, setHorarioId } = useHorario();
+  // El semestre lo maneja el interruptor global (barra superior)
+  const { semester } = useSemester();
+  const filterSemester = semester;
   const [allData, setAllData] = useState<ClassEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -527,8 +531,11 @@ export default function AdminPage() {
   }, [horarioId]);
   const [form, setForm] = useState(() => ({
     ...emptyForm,
+    semester,
     sede: horarioList[0]?.sedes?.[0] ?? horario.sedes?.[0] ?? "",
   }));
+  // La clase nueva se crea, por defecto, en el semestre activo global.
+  useEffect(() => { setForm(f => ({ ...f, semester })); }, [semester]);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -540,11 +547,10 @@ export default function AdminPage() {
   // El Admin siempre trabaja sobre el campus activo (horarioId)
   const [filterSede, setFilterSede] = useState("");
   const [filterCourse, setFilterCourse] = useState("");
-  const [filterSemester, setFilterSemester] = useState("");
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<{
     created: number; updated: number; skipped: number; totalStudents: number; parseErrors: string[];
-    perCampus?: Record<string, { students: number; createdPrimer: number; createdSegundo: number }>;
+    perCampus?: Record<string, { students: number; created: number }>;
   } | null>(null);
   const [importError, setImportError] = useState("");
   const [dragOver, setDragOver] = useState(false);
@@ -582,45 +588,6 @@ export default function AdminPage() {
   const [newSedeMaxSalas, setNewSedeMaxSalas] = useState("6");
   const [addingSedeFor, setAddingSedeFor] = useState<string | null>(null);
   const [sedeError, setSedeError] = useState("");
-  const [copyingSemester, setCopyingSemester] = useState(false);
-  const [copyResult, setCopyResult] = useState<{ created: number; copiedStudents: number } | null>(null);
-  const [copyError, setCopyError] = useState("");
-  const [copyOpen, setCopyOpen] = useState(false);
-  const [copyMode, setCopyMode] = useState<"with-students" | "without-students">("with-students");
-  const [copyPreview, setCopyPreview] = useState<{
-    classes: number; students: number; classesWithStudents: number; existingSegundo: number;
-  } | null>(null);
-
-  const copyTarget = horarioId;
-  const copyTargetLabel = horarioList.find(h => h.id === copyTarget)?.label ?? copyTarget;
-
-  async function openCopyWizard() {
-    setCopyResult(null);
-    setCopyError("");
-    setCopyPreview(null);
-    setCopyOpen(true);
-    try {
-      const res = await fetch(apiUrl(`/api/schedule/copy-semester/preview?horario=${encodeURIComponent(copyTarget)}`));
-      setCopyPreview(await res.json());
-    } catch { setCopyError("No se pudo cargar la vista previa."); }
-  }
-
-  async function handleCopySemester() {
-    setCopyingSemester(true);
-    setCopyResult(null);
-    setCopyError("");
-    try {
-      const res = await fetch(apiUrl(`/api/schedule/copy-semester?horario=${encodeURIComponent(copyTarget)}`), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: copyMode }),
-      });
-      const json = await res.json();
-      if (json.error) { setCopyError(json.error || "Error desconocido"); }
-      else { setCopyResult({ created: json.created, copiedStudents: json.copiedStudents ?? 0 }); setCopyOpen(false); fetchData(); }
-    } catch { setCopyError("Error de conexión."); }
-    finally { setCopyingSemester(false); }
-  }
 
   async function handleCreateCampus() {
     if (!newCampusName.trim()) { setCampusError("El nombre es requerido."); return; }
@@ -758,12 +725,9 @@ export default function AdminPage() {
     return allData.filter(e => {
       if (filterSede && e.sede !== filterSede) return false;
       if (filterCourse && e.course !== filterCourse) return false;
-      if (filterSemester) {
-        // PRIMER tab: show PRIMER + ANUAL; SEGUNDO tab: show SEGUNDO + ANUAL; ANUAL tab: only ANUAL
-        if (filterSemester === "PRIMER" && e.semester !== "PRIMER" && e.semester !== "ANUAL") return false;
-        if (filterSemester === "SEGUNDO" && e.semester !== "SEGUNDO" && e.semester !== "ANUAL") return false;
-        if (filterSemester === "ANUAL" && e.semester !== "ANUAL") return false;
-      }
+      // Semestre activo: PRIMER muestra PRIMER + anuales; SEGUNDO muestra SEGUNDO + anuales
+      if (filterSemester === "PRIMER" && e.semester !== "PRIMER" && e.semester !== "ANUAL" && !!e.semester) return false;
+      if (filterSemester === "SEGUNDO" && e.semester !== "SEGUNDO" && e.semester !== "ANUAL") return false;
       if (search) {
         const q = search.toLowerCase();
         const dayLabel = DAY_LABELS[e.day]?.toLowerCase() ?? e.day?.toLowerCase() ?? "";
@@ -790,11 +754,8 @@ export default function AdminPage() {
   const existingCourses = useMemo(() => {
     let base = allData;
     if (filterSede)    base = base.filter(e => e.sede === filterSede);
-    if (filterSemester) {
-      if (filterSemester === "PRIMER")  base = base.filter(e => e.semester === "PRIMER"  || e.semester === "ANUAL");
-      if (filterSemester === "SEGUNDO") base = base.filter(e => e.semester === "SEGUNDO" || e.semester === "ANUAL");
-      if (filterSemester === "ANUAL")   base = base.filter(e => e.semester === "ANUAL");
-    }
+    if (filterSemester === "PRIMER")  base = base.filter(e => !e.semester || e.semester === "PRIMER"  || e.semester === "ANUAL");
+    if (filterSemester === "SEGUNDO") base = base.filter(e => e.semester === "SEGUNDO" || e.semester === "ANUAL");
     return [...new Set(base.map(e => e.course))].sort();
   }, [allData, filterSede, filterSemester]);
 
@@ -966,7 +927,7 @@ export default function AdminPage() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch(apiUrl(`/api/schedule/import?horario=${encodeURIComponent(horarioId)}`), { method: "POST", body: formData });
+      const res = await fetch(apiUrl(`/api/schedule/import?horario=${encodeURIComponent(horarioId)}&semester=${encodeURIComponent(semester)}`), { method: "POST", body: formData });
       const json = await res.json();
       if (json.error) {
         setImportError(json.error);
@@ -1391,7 +1352,7 @@ export default function AdminPage() {
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  El Excel es la fuente de verdad para este campus: al subir se reemplaza su 1er semestre con los cursos y alumnos del archivo. Los demás campus no se tocan.
+                  El Excel es la fuente de verdad para este campus: al subir se reemplaza el <strong>{semester === "SEGUNDO" ? "2do" : "1er"} semestre</strong> (el que tienes activo arriba) con los cursos y alumnos del archivo. Los demás campus y el otro semestre no se tocan.
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0 flex-wrap">
@@ -1445,10 +1406,7 @@ export default function AdminPage() {
                           <div key={id} className="bg-white border border-emerald-200 rounded-xl px-3 py-2">
                             <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">{labels[id] ?? id}</p>
                             <p className="text-lg font-display font-bold text-foreground">{data.students}</p>
-                            <p className="text-[10px] text-muted-foreground">alumnos</p>
-                            {(data.createdSegundo > 0) && (
-                              <p className="text-[10px] text-purple-600 mt-0.5">{data.createdPrimer} 1er · {data.createdSegundo} 2do</p>
-                            )}
+                            <p className="text-[10px] text-muted-foreground">alumnos · {data.created} clases</p>
                           </div>
                         );
                       })}
@@ -1534,145 +1492,6 @@ export default function AdminPage() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* ── Pasar clases al 2do semestre (asistente con vista previa) ── */}
-        <div className="mb-6 bg-card border border-border/50 rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
-              <RefreshCw className="w-4 h-4 text-indigo-600" />
-            </div>
-            <div className="flex-1">
-              <h2 className="font-display font-bold text-foreground text-sm">Pasar clases al 2do semestre</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Copia las clases del 1er semestre (y anuales) del campus <strong>{copyTargetLabel}</strong> al 2do semestre.
-                Antes de confirmar verás exactamente qué se va a copiar.
-              </p>
-            </div>
-            {!copyOpen && (
-              <button
-                onClick={openCopyWizard}
-                disabled={copyingSemester || !copyTarget}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors shrink-0"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Iniciar
-              </button>
-            )}
-          </div>
-
-          {copyOpen && (
-            <div className="px-5 pb-5 space-y-4 border-t border-border/50 pt-4">
-              {!copyPreview ? (
-                <p className="text-sm text-muted-foreground">Cargando vista previa...</p>
-              ) : copyPreview.classes === 0 ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-                  <p className="text-sm text-amber-800 font-medium">
-                    El 1er semestre de {copyTargetLabel} no tiene clases todavía, así que no hay nada que copiar.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {/* Qué va a pasar, en números */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-muted/40 rounded-xl px-3 py-2.5 text-center">
-                      <p className="text-xl font-display font-bold text-foreground">{copyPreview.classes}</p>
-                      <p className="text-[11px] text-muted-foreground">clases se copiarán</p>
-                    </div>
-                    <div className="bg-muted/40 rounded-xl px-3 py-2.5 text-center">
-                      <p className="text-xl font-display font-bold text-foreground">{copyPreview.students}</p>
-                      <p className="text-[11px] text-muted-foreground">alumnos inscritos hoy</p>
-                    </div>
-                    <div className={`rounded-xl px-3 py-2.5 text-center ${copyPreview.existingSegundo > 0 ? "bg-amber-50 border border-amber-200" : "bg-muted/40"}`}>
-                      <p className={`text-xl font-display font-bold ${copyPreview.existingSegundo > 0 ? "text-amber-700" : "text-foreground"}`}>{copyPreview.existingSegundo}</p>
-                      <p className={`text-[11px] ${copyPreview.existingSegundo > 0 ? "text-amber-700" : "text-muted-foreground"}`}>clases ya en el 2do sem.</p>
-                    </div>
-                  </div>
-
-                  {copyPreview.existingSegundo > 0 && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
-                      <p className="text-xs text-amber-800">
-                        ⚠️ El 2do semestre de {copyTargetLabel} ya tiene {copyPreview.existingSegundo} clase{copyPreview.existingSegundo !== 1 ? "s" : ""}.
-                        Al confirmar, <strong>se reemplazarán</strong> por la copia nueva del 1er semestre.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Elección explícita: con o sin alumnos */}
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setCopyMode("with-students")}
-                      className={`text-left rounded-xl border-2 px-4 py-3 transition-colors ${
-                        copyMode === "with-students" ? "border-indigo-500 bg-indigo-50/60" : "border-border hover:border-indigo-300"
-                      }`}
-                    >
-                      <p className="text-sm font-bold text-foreground">Copiar clases CON sus alumnos</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Los {copyPreview.students} alumnos quedan inscritos igual que en el 1er semestre.
-                      </p>
-                    </button>
-                    <button
-                      onClick={() => setCopyMode("without-students")}
-                      className={`text-left rounded-xl border-2 px-4 py-3 transition-colors ${
-                        copyMode === "without-students" ? "border-indigo-500 bg-indigo-50/60" : "border-border hover:border-indigo-300"
-                      }`}
-                    >
-                      <p className="text-sm font-bold text-foreground">Copiar solo la estructura</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Las clases parten vacías: la inscripción del 2do semestre comienza de cero.
-                      </p>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleCopySemester}
-                      disabled={copyingSemester}
-                      className="px-4 py-2.5 text-sm font-bold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors"
-                    >
-                      {copyingSemester
-                        ? "Copiando..."
-                        : copyMode === "with-students"
-                          ? `Copiar ${copyPreview.classes} clases con alumnos`
-                          : `Copiar ${copyPreview.classes} clases vacías`}
-                    </button>
-                    <button
-                      onClick={() => setCopyOpen(false)}
-                      className="px-4 py-2.5 text-sm font-semibold bg-muted text-muted-foreground rounded-xl hover:bg-muted/80 transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </>
-              )}
-              {copyError && (
-                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span className="text-sm text-red-700">{copyError}</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {copyResult && (
-            <div className="px-5 pb-4">
-              <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-indigo-600 shrink-0" />
-                <span className="text-sm text-indigo-800 font-medium">
-                  Listo: {copyResult.created} clases copiadas al 2do semestre
-                  {copyResult.copiedStudents > 0 ? ` con ${copyResult.copiedStudents} alumnos` : " (sin alumnos)"}.
-                </span>
-              </div>
-            </div>
-          )}
-          {copyError && !copyOpen && (
-            <div className="px-5 pb-4">
-              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-                <span className="text-sm text-red-700">{copyError}</span>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1885,26 +1704,11 @@ export default function AdminPage() {
                     ))}
                   </select>
                 )}
-                <div className="flex items-center gap-1 border border-border rounded-xl overflow-hidden bg-background">
-                  {[
-                    { value: "", label: "Todos" },
-                    { value: "PRIMER", label: "1er Sem." },
-                    { value: "SEGUNDO", label: "2do Sem." },
-                    { value: "ANUAL", label: "Anual" },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => { setFilterSemester(opt.value); setFilterCourse(""); }}
-                      className={`px-3 py-2 text-xs font-semibold transition-colors border-r border-border last:border-r-0 ${
-                        filterSemester === opt.value
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                <span className={`inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold ${
+                  semester === "SEGUNDO" ? "bg-amber-100 text-amber-800" : "bg-primary/10 text-primary"
+                }`}>
+                  {semester === "SEGUNDO" ? "2do Semestre activado" : "1er Semestre activado"}
+                </span>
                 <select
                   value={filterCourse}
                   onChange={e => setFilterCourse(e.target.value)}
@@ -1915,9 +1719,9 @@ export default function AdminPage() {
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
-                {(search || filterSede || filterCourse || filterSemester) && (
+                {(search || filterSede || filterCourse) && (
                   <button
-                    onClick={() => { setSearch(""); setFilterSede(""); setFilterCourse(""); setFilterSemester(""); }}
+                    onClick={() => { setSearch(""); setFilterSede(""); setFilterCourse(""); }}
                     className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     title="Limpiar filtros"
                   >

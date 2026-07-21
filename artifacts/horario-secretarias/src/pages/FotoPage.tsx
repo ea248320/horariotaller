@@ -3,7 +3,13 @@ import { toPng } from "html-to-image";
 import { Camera, Download, Loader2 } from "lucide-react";
 import { DAYS, DAY_LABELS, TIME_SLOTS, type ClassEntry } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
+import { useSemester } from "@/context/SemesterContext";
 import { apiUrl } from "@/lib/api";
+
+function matchesSemester(c: ClassEntry, semester: "PRIMER" | "SEGUNDO"): boolean {
+  if (semester === "PRIMER") return !c.semester || c.semester === "PRIMER" || c.semester === "ANUAL";
+  return c.semester === "SEGUNDO" || c.semester === "ANUAL";
+}
 
 // ─── Pastel colors for photo export (TV display) ─────────────────────────────
 // Horario view keeps vivid Tailwind colors; here everything is soft pastel.
@@ -359,7 +365,8 @@ export default function FotoPage() {
   const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
   const [selectedSede, setSelectedSede] = useState(horario.sedes[0]);
-  const [selectedSemester, setSelectedSemester] = useState<"PRIMER" | "SEGUNDO">("PRIMER");
+  // Semestre global (interruptor en la barra superior)
+  const { semester: selectedSemester } = useSemester();
   const [downloading, setDownloading] = useState<string | null>(null);
 
   const gridRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -383,7 +390,7 @@ export default function FotoPage() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  const dayClasses = allData.filter(c => c.day === selectedDay && c.sede === selectedSede);
+  const dayClasses = allData.filter(c => c.day === selectedDay && c.sede === selectedSede && matchesSemester(c, selectedSemester));
 
   async function handleDownload(sede: string, day: string) {
     const key = `${sede}-${day}`;
@@ -422,24 +429,13 @@ export default function FotoPage() {
         </div>
       </div>
 
-      {/* Semester tabs */}
-      <div className="flex items-center gap-2 mb-5">
-        {([
-          { id: "PRIMER" as const, label: "1er Semestre" },
-          { id: "SEGUNDO" as const, label: "2do Semestre" },
-        ]).map(({ id, label }) => (
-          <button
-            key={id}
-            onClick={() => setSelectedSemester(id)}
-            className={`px-5 py-2 rounded-xl text-sm font-bold transition-all border ${
-              selectedSemester === id
-                ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20"
-                : "bg-card border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+      {/* Indicador del semestre activo (se cambia en la barra superior) */}
+      <div className="mb-5">
+        <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold ${
+          selectedSemester === "SEGUNDO" ? "bg-amber-100 text-amber-800" : "bg-primary/10 text-primary"
+        }`}>
+          {selectedSemester === "SEGUNDO" ? "2do Semestre activado" : "1er Semestre activado"}
+        </span>
       </div>
 
       {/* Day selector */}

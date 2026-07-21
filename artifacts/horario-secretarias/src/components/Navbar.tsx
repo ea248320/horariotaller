@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useHorario } from "@/context/HorarioContext";
 import { useSettings } from "@/context/SettingsContext";
+import SemesterToggle from "@/components/SemesterToggle";
 import { useNotifications } from "@/context/NotificationContext";
 import { useCurrentUser, UserAvatar } from "@/context/UserContext";
 import {
@@ -200,6 +201,8 @@ export default function Navbar() {
                 </Link>
               </nav>
 
+              <div className="ml-2 shrink-0"><SemesterToggle compact /></div>
+
               <Link
                 href="/"
                 title="Cambiar sede"
@@ -249,6 +252,10 @@ export default function Navbar() {
             <div className="px-4 py-2 mb-1">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Campus activo</span>
               <p className="text-sm font-bold text-primary mt-0.5">{horario?.label}</p>
+            </div>
+            <div className="px-4 py-2 mb-1 flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Semestre</span>
+              <SemesterToggle compact />
             </div>
             {visibleLinks.map(({ href, label }) => {
               const Icon = ICON_MAP[href] ?? Home;

@@ -8,6 +8,7 @@ import {
   type ClassEntry,
 } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
+import { useSemester } from "@/context/SemesterContext";
 import { apiUrl } from "@/lib/api";
 
 const SEDE_LABELS: Record<string, string> = {
@@ -33,7 +34,8 @@ export default function GuiasPage() {
   const [allData, setAllData]     = useState<ClassEntry[]>([]);
   const [loading, setLoading]     = useState(true);
   const [selectedDay, setSelectedDay] = useState<string>(DAYS[0]);
-  const [selectedSemester, setSelectedSemester] = useState<"PRIMER" | "SEGUNDO">("PRIMER");
+  // El semestre es global (interruptor en la barra superior)
+  const { semester: selectedSemester } = useSemester();
   const [expandedSede, setExpandedSede] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(horario.sedes.map(s => [s, true]))
   );
@@ -142,24 +144,13 @@ export default function GuiasPage() {
         </div>
       </div>
 
-      {/* Selector de semestre */}
-      <div className="flex gap-2 mb-4">
-        {([
-          { id: "PRIMER" as const, label: "1er Semestre" },
-          { id: "SEGUNDO" as const, label: "2do Semestre" },
-        ]).map(({ id, label }) => (
-          <button
-            key={id}
-            onClick={() => setSelectedSemester(id)}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
-              selectedSemester === id
-                ? "bg-foreground text-background shadow-md"
-                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+      {/* Indicador del semestre activo (se cambia en la barra superior) */}
+      <div className="mb-4">
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold ${
+          selectedSemester === "SEGUNDO" ? "bg-amber-100 text-amber-800" : "bg-primary/10 text-primary"
+        }`}>
+          {selectedSemester === "SEGUNDO" ? "2do Semestre activado" : "1er Semestre activado"}
+        </span>
       </div>
 
       {/* Selector de día */}

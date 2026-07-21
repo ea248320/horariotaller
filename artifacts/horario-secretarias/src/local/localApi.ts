@@ -564,68 +564,6 @@ route("DELETE", "/api/schedule/wipe", () => {
   return json({ ok: true, deletedClasses: count });
 });
 
-// Vista previa del paso de semestre: cuántas clases y alumnos se copiarían
-// y cuántas clases del 2º semestre serían reemplazadas.
-route("GET", "/api/schedule/copy-semester/preview", ({ query }) => {
-  const horarioVal = (query.get("horario") || "").toUpperCase();
-  const classes = load("classes");
-  const sourceClasses = classes.filter(c => c.horario === horarioVal && ["PRIMER", "ANUAL"].includes(c.semester));
-  const students = load("students");
-  const sourceCodes = new Set(sourceClasses.map(c => c.classCode));
-  const sourceStudents = students.filter(s =>
-    sourceCodes.has(s.classCode) && ["PRIMER", "ANUAL"].includes(s.classSemester) && s.classHorario === horarioVal);
-  const existingSegundo = classes.filter(c => c.horario === horarioVal && c.semester === "SEGUNDO").length;
-  return json({
-    classes: sourceClasses.length,
-    students: sourceStudents.length,
-    classesWithStudents: new Set(sourceStudents.map(s => s.classCode)).size,
-    existingSegundo,
-  });
-});
-
-// Copia las clases del 1er semestre (y anuales) al 2º semestre.
-// body.mode: "with-students" (por defecto) copia también las listas de alumnos;
-// "without-students" copia solo la estructura de clases, con inscripción nueva.
-route("POST", "/api/schedule/copy-semester", ({ query, body }) => {
-  const horarioVal = (query.get("horario") || "TEMUCO").toUpperCase();
-  const withStudents = body?.mode !== "without-students";
-  const classes = load("classes");
-  const sourceClasses = classes.filter(c => c.horario === horarioVal && ["PRIMER", "ANUAL"].includes(c.semester));
-  if (!sourceClasses.length) {
-    return json({ ok: true, created: 0, message: "No hay clases de 1er semestre para copiar" });
-  }
-  const students = load("students");
-  const sourceCodes = new Set(sourceClasses.map(c => c.classCode));
-  const studentsByCode: Record<string, string[]> = {};
-  for (const s of students) {
-    if (sourceCodes.has(s.classCode) && ["PRIMER", "ANUAL"].includes(s.classSemester) && s.classHorario === horarioVal) {
-      (studentsByCode[s.classCode] ??= []).push(s.studentName);
-    }
-  }
-
-  const keptClasses = classes.filter(c => !(c.horario === horarioVal && c.semester === "SEGUNDO"));
-  const keptStudents = students.filter(s => !(s.classHorario === horarioVal && s.classSemester === "SEGUNDO"));
-
-  let created = 0, copiedStudents = 0;
-  for (const cls of sourceClasses) {
-    keptClasses.push({ ...cls, semester: "SEGUNDO", createdAt: nowIso() });
-    if (withStudents) {
-      for (const name of studentsByCode[cls.classCode] ?? []) {
-        keptStudents.push({
-          id: nextId("students"),
-          classCode: cls.classCode, classSemester: "SEGUNDO", classHorario: horarioVal,
-          studentName: name, createdAt: nowIso(),
-        });
-        copiedStudents++;
-      }
-    }
-    created++;
-  }
-  save("classes", keptClasses);
-  save("students", keptStudents);
-  broadcastScheduleChange(horarioVal);
-  return json({ ok: true, created, copiedStudents });
-});
 
 route("POST", "/api/schedule/import", async ({ query, formData }) => {
   const file = formData?.get("file") as File | null;
@@ -634,6 +572,9 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
 
   // Con ?horario=<id> la importación afecta solo a ese campus; sin él, a todos.
   const onlyHorario = query.get("horario") || null;
+  // Semestre destino: se importa TODO el Excel al semestre activo (?semester=).
+  const target = (query.get("semester") ?? "").toUpperCase();
+  const targetSemester = target === "SEGUNDO" ? "SEGUNDO" : "PRIMER";
 
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: "array" });
@@ -641,16 +582,16 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
   const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
   const dataRows = rows.slice(1).filter(r => r.length >= 5);
 
-  // Vaciar PRIMER (solo del campus indicado, si lo hay); SEGUNDO se conserva y
-  // solo se actualizan las listas de alumnos de las clases presentes en el Excel.
+  // Vaciar el semestre destino (solo del campus indicado, si lo hay). El otro
+  // semestre no se toca.
   let classes = load("classes").filter(c =>
-    c.semester !== "PRIMER" || (onlyHorario !== null && c.horario !== onlyHorario));
+    c.semester !== targetSemester || (onlyHorario !== null && c.horario !== onlyHorario));
   let students = load("students").filter(s =>
-    s.classSemester !== "PRIMER" || (onlyHorario !== null && s.classHorario !== onlyHorario));
+    s.classSemester !== targetSemester || (onlyHorario !== null && s.classHorario !== onlyHorario));
 
   let totalCreated = 0, totalSkipped = 0, totalStudents = 0;
   const allParseErrors: string[] = [];
-  const perCampus: Record<string, { students: number; createdPrimer: number; createdSegundo: number }> = {};
+  const perCampus: Record<string, { students: number; created: number }> = {};
 
   // Importar para los campus que el cliente configuró. La columna 0 (Nivel)
   // del Excel debe decir "SEDE <NOMBRE DEL CAMPUS>" (los 4 campus del formato
@@ -663,12 +604,10 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
     const matching = dataRows.filter(r => String(r[0]).trim().toUpperCase() === nivelFilter);
 
     type Parsed = { students: string[]; sala: number | null; sede: string };
-    const byCodePrimer = new Map<string, Parsed>();
-    const byCodeSegundo = new Map<string, Parsed>();
+    // Todo el Excel va al semestre activo, sin distinguir por columnas.
+    const byCode = new Map<string, Parsed>();
 
     for (const r of matching) {
-      const semester = String(r[1] ?? "").includes("/2") ? "SEGUNDO" : "PRIMER";
-      const byCode = semester === "SEGUNDO" ? byCodeSegundo : byCodePrimer;
       const clase = String(r[2]).trim();
       let sala: number | null = null;
       const salaMatch = clase.match(/SALA\s+(\d+)/i);
@@ -686,10 +625,8 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
       byCode.get(classCode)!.students.push(fullName);
     }
 
-    let createdPrimer = 0, createdSegundo = 0;
-
-    // PRIMER: insertar desde cero
-    for (const [classCode, info] of byCodePrimer) {
+    let created = 0;
+    for (const [classCode, info] of byCode) {
       const parsed = parseClassCode(classCode);
       if (!parsed || !parsed.course || !parsed.day || !parsed.time) {
         allParseErrors.push(classCode);
@@ -699,50 +636,21 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
       classes.push({
         classCode, horario: horarioId,
         course: parsed.course, day: parsed.day, time: parsed.time, teacher: parsed.teacher,
-        sede: info.sede, sala: info.sala ?? 1, semester: "PRIMER", createdAt: nowIso(),
+        sede: info.sede, sala: info.sala ?? 1, semester: targetSemester, createdAt: nowIso(),
       });
       for (const studentName of info.students) {
         students.push({
           id: nextId("students"),
-          classCode, classSemester: "PRIMER", classHorario: horarioId,
+          classCode, classSemester: targetSemester, classHorario: horarioId,
           studentName, createdAt: nowIso(),
         });
       }
-      createdPrimer++;
+      created++;
       totalCreated++;
     }
 
-    // SEGUNDO: crear la clase si falta y reemplazar solo sus alumnos
-    for (const [classCode, info] of byCodeSegundo) {
-      const parsed = parseClassCode(classCode);
-      if (!parsed || !parsed.course || !parsed.day || !parsed.time) {
-        allParseErrors.push(classCode);
-        totalSkipped++;
-        continue;
-      }
-      const exists = classes.some(c => c.classCode === classCode && c.semester === "SEGUNDO" && c.horario === horarioId);
-      if (!exists) {
-        classes.push({
-          classCode, horario: horarioId,
-          course: parsed.course, day: parsed.day, time: parsed.time, teacher: parsed.teacher,
-          sede: info.sede, sala: info.sala ?? 1, semester: "SEGUNDO", createdAt: nowIso(),
-        });
-        totalCreated++;
-      }
-      students = students.filter(s =>
-        !(s.classCode === classCode && s.classSemester === "SEGUNDO" && s.classHorario === horarioId));
-      for (const studentName of info.students) {
-        students.push({
-          id: nextId("students"),
-          classCode, classSemester: "SEGUNDO", classHorario: horarioId,
-          studentName, createdAt: nowIso(),
-        });
-      }
-      createdSegundo++;
-    }
-
     totalStudents += matching.length;
-    perCampus[horarioId] = { students: matching.length, createdPrimer, createdSegundo };
+    perCampus[horarioId] = { students: matching.length, created };
     broadcastScheduleChange(horarioId);
   }
 

@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
-import { Search, X, MapPin, Clock, Users, AlertTriangle, Plus, Minus, Trash2, RefreshCw, Pencil, Check, Bell, BellOff, GraduationCap } from "lucide-react";
+import { Search, X, MapPin, Clock, Users, AlertTriangle, Plus, Minus, Trash2, RefreshCw, Pencil, Check, Bell, BellOff, GraduationCap, CheckCircle2 } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
 import { isModuleEnabled } from "@/lib/navConfig";
+import { useSemester } from "@/context/SemesterContext";
 import {
   DAYS,
   DAY_LABELS,
@@ -784,7 +785,13 @@ export default function HorarioPage() {
   const [search, setSearch] = useState<string>("");
   const [selectedEntry, setSelectedEntry] = useState<ClassEntry | null>(null);
   const [activeSede, setActiveSede] = useState<string>(() => horario.sedes[0]);
-  const [activeTab, setActiveTab] = useState<"PRIMER" | "SEGUNDO" | "talleres">("PRIMER");
+  // El semestre es GLOBAL (interruptor en la barra superior). Aquí solo se
+  // decide si se ven las clases del semestre activo o la pestaña de Talleres.
+  const { semester } = useSemester();
+  const [showTalleres, setShowTalleres] = useState(false);
+  const activeTab: "PRIMER" | "SEGUNDO" | "talleres" = showTalleres ? "talleres" : semester;
+  // Al cambiar el semestre global, mostrar el horario (no quedarse en Talleres).
+  useEffect(() => { setShowTalleres(false); }, [semester]);
   const [allData, setAllData] = useState<ClassEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -816,7 +823,7 @@ export default function HorarioPage() {
   // el mismo contenido al recargar, disparando este efecto innecesariamente.
   useEffect(() => {
     setActiveSede(horario.sedes[0]);
-    setActiveTab("PRIMER");
+    setShowTalleres(false);
     setSelectedEntry(null);
     setLoading(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1274,26 +1281,33 @@ export default function HorarioPage() {
                 )}
               </div>
 
-              {/* ── Pestañas Semestre / Talleres ── */}
-              <div className="flex items-center gap-1 px-4 py-2 border-b border-border/30 bg-muted/20">
-                {([
-                  { id: "PRIMER"   as const, label: "1er Semestre", Icon: Search },
-                  { id: "SEGUNDO"  as const, label: "2do Semestre", Icon: Search },
-                  { id: "talleres" as const, label: "Talleres",     Icon: GraduationCap },
-                ] as const).filter(t => t.id !== "talleres" || isModuleEnabled("talleres")).map(({ id, label, Icon }) => (
+              {/* ── Semestre activo (global) / Talleres ── */}
+              <div className="flex items-center gap-2 px-4 py-2 border-b border-border/30 bg-muted/20 flex-wrap">
+                {!showTalleres && (
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${
+                    semester === "SEGUNDO" ? "bg-amber-100 text-amber-800" : "bg-primary/10 text-primary"
+                  }`}>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {semester === "SEGUNDO" ? "2do Semestre activado" : "1er Semestre activado"}
+                  </span>
+                )}
+                <span className="text-[11px] text-muted-foreground">
+                  (cámbialo en el botón <strong>Semestre</strong> de la barra superior)
+                </span>
+                <span className="flex-1" />
+                {isModuleEnabled("talleres") && (
                   <button
-                    key={id}
-                    onClick={() => setActiveTab(id)}
+                    onClick={() => setShowTalleres(v => !v)}
                     className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                      activeTab === id
+                      showTalleres
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
-                    {label}
+                    <GraduationCap className="w-3.5 h-3.5" />
+                    Talleres
                   </button>
-                ))}
+                )}
               </div>
 
               {activeTab !== "talleres" && (
@@ -1402,22 +1416,19 @@ export default function HorarioPage() {
                   </div>
                   <div>
                     <p className="font-display font-bold text-foreground text-lg">
-                      {activeTab === "SEGUNDO" ? "El 2do semestre aún no tiene clases" : "No hay clases para este semestre"}
+                      No hay clases para el {activeTab === "SEGUNDO" ? "2do" : "1er"} semestre
                     </p>
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                      {activeTab === "SEGUNDO"
-                        ? "Puedes copiar las clases del 1er semestre con un asistente que te muestra exactamente qué se va a copiar."
-                        : "Crea clases desde el Panel Admin o importa un archivo Excel."}
+                      Crea clases desde el Panel Admin o importa un archivo Excel. Se guardarán en el
+                      semestre que tengas activo arriba.
                     </p>
                   </div>
-                  {activeTab === "SEGUNDO" && (
-                    <button
-                      onClick={() => setLocation("/admin")}
-                      className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition-colors"
-                    >
-                      Pasar clases al 2do semestre
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setLocation("/admin")}
+                    className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors"
+                  >
+                    Ir al Panel Admin
+                  </button>
                 </div>
               </div>
             ) : (

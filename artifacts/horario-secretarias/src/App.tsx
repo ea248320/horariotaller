@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HorarioProvider } from "@/context/HorarioContext";
 import { SettingsProvider } from "@/context/SettingsContext";
+import { SemesterProvider } from "@/context/SemesterContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import ToastContainer from "@/components/ToastContainer";
 import Navbar from "@/components/Navbar";
@@ -85,6 +86,7 @@ function Router() {
   return (
     <ErrorBoundary>
       <SettingsProvider>
+      <SemesterProvider>
       <HorarioProvider>
         <UserProvider>
         <NotificationProvider>
@@ -114,6 +116,7 @@ function Router() {
         </NotificationProvider>
         </UserProvider>
       </HorarioProvider>
+      </SemesterProvider>
       </SettingsProvider>
     </ErrorBoundary>
   );
