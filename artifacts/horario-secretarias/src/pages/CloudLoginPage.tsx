@@ -115,6 +115,15 @@ export default function CloudLoginPage() {
             ? "¿No tienes cuenta? Usa \"Crear negocio\" arriba."
             : "¿Ya tienes cuenta? Usa \"Iniciar sesión\" arriba."}
         </p>
+
+        <div className="text-center mt-4">
+          <a
+            href={import.meta.env.BASE_URL}
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground underline underline-offset-2"
+          >
+            ← Volver a la versión normal
+          </a>
+        </div>
       </div>
     </div>
   );
