@@ -30,16 +30,45 @@ function loadRaw(): StoredConfig {
   } catch { return {}; }
 }
 
+// Módulo (activable por negocio desde /backoffice) al que pertenece cada ruta.
+// Las rutas sin módulo son parte del núcleo y siempre están disponibles.
+export const ROUTE_MODULE: Record<string, string> = {
+  "/tareas": "tareas",
+  "/cambios": "cambios",
+  "/notas": "notas",
+  "/guias": "guias",
+  "/foto": "foto",
+  "/orientacion": "orientacion",
+};
+
+export function getEnabledModules(): Record<string, boolean> {
+  try {
+    const s = JSON.parse(localStorage.getItem("htdb:settings") ?? "{}");
+    return s.modules ?? {};
+  } catch {
+    return {};
+  }
+}
+
+export function isModuleEnabled(moduleKey: string): boolean {
+  return getEnabledModules()[moduleKey] !== false;
+}
+
 export function getNavConfig(): NavItem[] {
   const raw = loadRaw();
-  return NAV_DEFAULTS.map(d => {
-    const override = raw[d.href];
-    return {
-      href: d.href,
-      label: override?.label ?? d.label,
-      visible: override?.visible ?? d.visible,
-    };
-  });
+  return NAV_DEFAULTS
+    .filter(d => {
+      const mod = ROUTE_MODULE[d.href];
+      return !mod || isModuleEnabled(mod);
+    })
+    .map(d => {
+      const override = raw[d.href];
+      return {
+        href: d.href,
+        label: override?.label ?? d.label,
+        visible: override?.visible ?? d.visible,
+      };
+    });
 }
 
 export function saveNavConfig(items: NavItem[]) {

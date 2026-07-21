@@ -3,7 +3,7 @@ import { Users, UserCircle2, ShieldCheck, LogIn, Settings, HeartHandshake } from
 import { useCurrentUser, UserAvatar, USER_COLORS, type CurrentUser } from "@/context/UserContext";
 import { useHorario } from "@/context/HorarioContext";
 import { apiUrl } from "@/lib/api";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 interface TeamMember {
   id: number;
@@ -28,6 +28,7 @@ const ROLE_ICONS: Record<string, React.ElementType> = {
 };
 
 export default function UserSelectionModal() {
+  const [location] = useLocation();
   const { currentUser, setCurrentUser } = useCurrentUser();
   const { horarioId, horario } = useHorario();
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -60,6 +61,8 @@ export default function UserSelectionModal() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [horarioId]);
 
+  // El panel del propietario tiene su propio PIN: no exigir usuario ahí
+  if (location === "/backoffice") return null;
   if (!open) return null;
 
   const handleSelect = (member: TeamMember) => {

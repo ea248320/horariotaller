@@ -275,9 +275,14 @@ route("GET", "/api/healthz", () => json({ status: "ok" }));
 
 const ALL_DAYS = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
 
+// Módulos activables por negocio desde el backoffice de propietario (/backoffice)
+const MODULE_KEYS = ["tareas", "cambios", "notas", "guias", "foto", "orientacion", "talleres"];
+
 const DEFAULT_SETTINGS = {
   platformName: "Mi Plataforma de Horarios",
   subtitle: "Gestión de horarios, clases y equipo",
+  modules: Object.fromEntries(MODULE_KEYS.map(k => [k, true])) as Record<string, boolean>,
+  ownerPin: "",
   days: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"],
   timeSlots: [
     "09.15 - 10.15",
@@ -292,7 +297,12 @@ const DEFAULT_SETTINGS = {
 
 function loadSettings() {
   try {
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(`${PREFIX}settings`) ?? "{}") };
+    const stored = JSON.parse(localStorage.getItem(`${PREFIX}settings`) ?? "{}");
+    return {
+      ...DEFAULT_SETTINGS,
+      ...stored,
+      modules: { ...DEFAULT_SETTINGS.modules, ...(stored.modules ?? {}) },
+    };
   } catch {
     return { ...DEFAULT_SETTINGS };
   }
@@ -308,6 +318,16 @@ route("PATCH", "/api/settings", ({ body }) => {
     const days = Array.isArray(body.days) ? ALL_DAYS.filter(d => body.days.includes(d)) : [];
     if (days.length === 0) return json({ error: "Debe haber al menos un día activo" }, 400);
     current.days = days;
+  }
+  if (body?.modules !== undefined && typeof body.modules === "object" && body.modules !== null) {
+    for (const k of MODULE_KEYS) {
+      if (typeof body.modules[k] === "boolean") current.modules[k] = body.modules[k];
+    }
+  }
+  if (body?.ownerPin !== undefined) {
+    const pin = String(body.ownerPin).trim();
+    if (!/^\d{4,8}$/.test(pin)) return json({ error: "El PIN debe tener entre 4 y 8 dígitos" }, 400);
+    current.ownerPin = pin;
   }
   if (body?.timeSlots !== undefined) {
     const slots = Array.isArray(body.timeSlots)

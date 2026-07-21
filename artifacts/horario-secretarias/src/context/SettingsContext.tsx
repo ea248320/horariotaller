@@ -7,6 +7,8 @@ export interface PlatformSettings {
   subtitle: string;
   days: string[];
   timeSlots: string[];
+  modules: Record<string, boolean>;
+  ownerPin: string;
 }
 
 const DEFAULTS: PlatformSettings = {
@@ -14,6 +16,8 @@ const DEFAULTS: PlatformSettings = {
   subtitle: "Gestión de horarios, clases y equipo",
   days: DEFAULT_DAYS,
   timeSlots: DEFAULT_TIME_SLOTS,
+  modules: {},
+  ownerPin: "",
 };
 
 interface SettingsContextValue {

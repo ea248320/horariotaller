@@ -1,5 +1,6 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { isModuleEnabled, ROUTE_MODULE } from "@/lib/navConfig";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,7 +22,15 @@ const CambiosPage      = lazy(() => import("@/pages/CambiosPage"));
 const TareasPage       = lazy(() => import("@/pages/TareasPage"));
 const OrientacionPage  = lazy(() => import("@/pages/OrientacionPage"));
 const NotasPage        = lazy(() => import("@/pages/NotasPage"));
+const OwnerPage        = lazy(() => import("@/pages/OwnerPage"));
 const NotFound         = lazy(() => import("@/pages/not-found"));
+
+// Ruta que solo existe si el módulo está activo para este negocio (/backoffice)
+function ModuleRoute({ path, component }: { path: string; component: React.ComponentType }) {
+  const mod = ROUTE_MODULE[path];
+  const enabled = !mod || isModuleEnabled(mod);
+  return <Route path={path} component={enabled ? component : () => <Redirect to="/" />} />;
+}
 
 function PageLoader() {
   return (
@@ -82,13 +91,14 @@ function Router() {
                   <Route path="/" component={HomePage} />
                   <Route path="/horarios" component={HorarioPage} />
                   <Route path="/admin" component={AdminPage} />
-                  <Route path="/guias" component={GuiasPage} />
-                  <Route path="/foto" component={FotoPage} />
+                  <Route path="/backoffice" component={OwnerPage} />
+                  <ModuleRoute path="/guias" component={GuiasPage} />
+                  <ModuleRoute path="/foto" component={FotoPage} />
                   <Route path="/notificaciones" component={NotificationsPage} />
-                  <Route path="/cambios" component={CambiosPage} />
-                  <Route path="/tareas" component={TareasPage} />
-                  <Route path="/orientacion" component={OrientacionPage} />
-                  <Route path="/notas" component={NotasPage} />
+                  <ModuleRoute path="/cambios" component={CambiosPage} />
+                  <ModuleRoute path="/tareas" component={TareasPage} />
+                  <ModuleRoute path="/orientacion" component={OrientacionPage} />
+                  <ModuleRoute path="/notas" component={NotasPage} />
                   <Route component={NotFound} />
                 </Switch>
               </Suspense>

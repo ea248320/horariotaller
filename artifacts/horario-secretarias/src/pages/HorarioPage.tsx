@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
 import { Search, X, MapPin, Clock, Users, AlertTriangle, Plus, Minus, Trash2, RefreshCw, Pencil, Check, Bell, BellOff, GraduationCap } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
+import { isModuleEnabled } from "@/lib/navConfig";
 import {
   DAYS,
   DAY_LABELS,
@@ -1279,7 +1280,7 @@ export default function HorarioPage() {
                   { id: "PRIMER"   as const, label: "1er Semestre", Icon: Search },
                   { id: "SEGUNDO"  as const, label: "2do Semestre", Icon: Search },
                   { id: "talleres" as const, label: "Talleres",     Icon: GraduationCap },
-                ] as const).map(({ id, label, Icon }) => (
+                ] as const).filter(t => t.id !== "talleres" || isModuleEnabled("talleres")).map(({ id, label, Icon }) => (
                   <button
                     key={id}
                     onClick={() => setActiveTab(id)}
