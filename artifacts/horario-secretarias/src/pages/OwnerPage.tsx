@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import {
   Shield, Lock, CalendarDays, ClipboardList, ArrowLeftRight, StickyNote,
-  Printer, Camera, HeartHandshake, GraduationCap, Check, X,
+  Printer, Camera, HeartHandshake, GraduationCap, Check, X, Activity, Trash2,
 } from "lucide-react";
+import { getErrorLog, clearErrorLog, type ErrorEntry } from "@/lib/monitor";
 import { useSettings } from "@/context/SettingsContext";
 import { useHorario } from "@/context/HorarioContext";
 
@@ -35,6 +36,7 @@ export default function OwnerPage() {
   const [modules, setModules] = useState<Record<string, boolean>>(settings.modules);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [errorLog, setErrorLog] = useState<ErrorEntry[]>(getErrorLog);
 
   const needsPinSetup = !settings.ownerPin;
 
@@ -190,7 +192,51 @@ export default function OwnerPage() {
         {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
       </div>
 
-      <div className="mt-8 flex items-start gap-2.5 bg-muted/40 border border-border/50 rounded-2xl px-4 py-3">
+      {/* ── Salud de la aplicación ── */}
+      <div className="mt-8 bg-card border border-border/50 rounded-2xl overflow-hidden">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border/50">
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+            errorLog.length === 0 ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
+          }`}>
+            <Activity className="w-4 h-4" />
+          </div>
+          <div className="flex-1">
+            <p className="font-bold text-sm text-foreground">Salud de la aplicación</p>
+            <p className="text-xs text-muted-foreground">
+              {errorLog.length === 0
+                ? "Sin errores registrados en este navegador. Todo en orden."
+                : `${errorLog.length} error${errorLog.length !== 1 ? "es" : ""} registrado${errorLog.length !== 1 ? "s" : ""} — si la app se comporta raro, esta lista ayuda a diagnosticar.`}
+            </p>
+          </div>
+          {errorLog.length > 0 && (
+            <button
+              onClick={() => { clearErrorLog(); setErrorLog([]); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Limpiar
+            </button>
+          )}
+        </div>
+        {errorLog.length > 0 && (
+          <div className="max-h-56 overflow-y-auto divide-y divide-border/40">
+            {errorLog.slice(0, 10).map((e, i) => (
+              <div key={i} className="px-5 py-2.5">
+                <p className="text-xs font-mono text-foreground break-all">{e.message}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  {new Date(e.time).toLocaleString()} · v{e.version}{e.source ? ` · ${e.source}` : ""}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <p className="mt-4 text-center text-[11px] text-muted-foreground">
+        Plataforma v{__APP_VERSION__} · compilada el {new Date(__BUILD_TIME__).toLocaleDateString()}
+      </p>
+
+      <div className="mt-4 flex items-start gap-2.5 bg-muted/40 border border-border/50 rounded-2xl px-4 py-3">
         <CalendarDays className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
         <p className="text-xs text-muted-foreground leading-relaxed">
           Los módulos <strong>Horarios</strong>, <strong>Alertas</strong> y <strong>Admin</strong> son el núcleo de la

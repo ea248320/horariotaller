@@ -42,9 +42,16 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
   root: path.resolve(__dirname),
+  // Versión y fecha de compilación visibles en el panel del propietario
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? "0.0.0"),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
   build: {
     outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
+    // Nunca publicar source maps: el código de producción no expone su fuente
+    sourcemap: false,
   },
   server: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 5173,

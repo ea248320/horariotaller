@@ -39,6 +39,9 @@ jobs:
       - name: Instalar dependencias
         run: pnpm install --no-frozen-lockfile
 
+      - name: Verificación de tipos (bloquea el despliegue si falla)
+        run: pnpm --filter @workspace/horario-secretarias run typecheck
+
       - name: Build del frontend
         run: pnpm --filter @workspace/horario-secretarias run build
         env:
