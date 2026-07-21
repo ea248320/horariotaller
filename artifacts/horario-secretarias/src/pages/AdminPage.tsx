@@ -11,6 +11,7 @@ import {
 } from "@/data/schedule";
 import { useHorario } from "@/context/HorarioContext";
 import { useSettings } from "@/context/SettingsContext";
+import { downloadBackup, shouldRemindBackup, snoozeBackupReminder } from "@/lib/backup";
 import { apiUrl } from "@/lib/api";
 
 const SEDE_DISPLAY: Record<string, string> = {
@@ -232,6 +233,42 @@ function CourseCombobox({
   );
 }
 
+// ─── Recordatorio de respaldo (los datos viven en este navegador) ────────────
+function BackupReminderBanner({ hasData }: { hasData: boolean }) {
+  const { settings } = useSettings();
+  const [dismissed, setDismissed] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  if (dismissed || !shouldRemindBackup(settings.lastBackupAt, hasData)) return null;
+
+  return (
+    <div className="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-200 rounded-2xl px-4 py-3 flex-wrap">
+      <span className="text-lg">💾</span>
+      <div className="flex-1 min-w-[200px]">
+        <p className="text-sm font-semibold text-sky-900">
+          {settings.lastBackupAt ? "Hace más de 2 semanas del último respaldo" : "Aún no has descargado un respaldo"}
+        </p>
+        <p className="text-xs text-sky-700">
+          Tus datos viven en este navegador: descarga un respaldo periódicamente para no perder nada.
+        </p>
+      </div>
+      <button
+        onClick={async () => { setDownloading(true); await downloadBackup(); setDownloading(false); setDismissed(true); }}
+        disabled={downloading}
+        className="px-4 py-2 text-xs font-bold bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors disabled:opacity-60"
+      >
+        {downloading ? "Descargando..." : "Descargar respaldo ahora"}
+      </button>
+      <button
+        onClick={() => { snoozeBackupReminder(); setDismissed(true); }}
+        className="px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-100 rounded-xl transition-colors"
+      >
+        Recordar en 7 días
+      </button>
+    </div>
+  );
+}
+
 // ─── Datos de la plataforma (configuración vendible por cliente) ─────────────
 function PlatformSettingsCard() {
   const { settings, updateSettings } = useSettings();
@@ -287,15 +324,7 @@ function PlatformSettingsCard() {
   }
 
   async function handleBackup() {
-    const res = await fetch(apiUrl("/api/backup"));
-    const data = await res.json();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `respaldo_plataforma_${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    await downloadBackup();
   }
 
   async function handleRestoreFile(file: File) {
@@ -978,6 +1007,8 @@ export default function AdminPage() {
           </div>
 
         </div>
+
+        <BackupReminderBanner hasData={allData.length > 0} />
 
         {apiError && (
           <div className="mb-4 flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">

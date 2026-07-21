@@ -9,6 +9,7 @@ export interface PlatformSettings {
   timeSlots: string[];
   modules: Record<string, boolean>;
   ownerPin: string;
+  lastBackupAt?: string;
 }
 
 const DEFAULTS: PlatformSettings = {

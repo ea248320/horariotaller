@@ -283,6 +283,7 @@ const DEFAULT_SETTINGS = {
   subtitle: "Gestión de horarios, clases y equipo",
   modules: Object.fromEntries(MODULE_KEYS.map(k => [k, true])) as Record<string, boolean>,
   ownerPin: "",
+  lastBackupAt: "",
   days: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"],
   timeSlots: [
     "09.15 - 10.15",
@@ -354,6 +355,11 @@ function allDataKeys(): string[] {
 }
 
 route("GET", "/api/backup", () => {
+  // Registrar la fecha del último respaldo (para el recordatorio en Admin)
+  const settings = loadSettings();
+  settings.lastBackupAt = nowIso();
+  localStorage.setItem(`${PREFIX}settings`, JSON.stringify(settings));
+
   const data: Record<string, unknown> = {};
   for (const k of allDataKeys()) {
     try { data[k] = JSON.parse(localStorage.getItem(k) ?? "null"); }
