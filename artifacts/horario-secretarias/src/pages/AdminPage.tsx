@@ -512,6 +512,7 @@ function PlatformSettingsCard() {
 
 export default function AdminPage() {
   const { horarioId, horario, horarioList, reloadHorarios, setHorarioId } = useHorario();
+  const { settings } = useSettings();
   // El semestre lo maneja el interruptor global (barra superior)
   const { semester } = useSemester();
   const filterSemester = semester;
@@ -914,6 +915,33 @@ export default function AdminPage() {
     } finally {
       setWiping(false);
     }
+  }
+
+  async function handleDownloadTemplate() {
+    const XLSX = await import("xlsx");
+    const sede = horario.sedes[0] ?? "SEDE 1";
+    const dias = settings.days ?? ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"];
+    const hora = (settings.timeSlots ?? ["09:00 - 10:00"])[0];
+    // Filas de ejemplo para que se entienda el formato
+    const ejemplo = [
+      { Día: dias[0], Hora: hora, Sede: sede, Sala: 1, Curso: "Matemáticas", Profesor: "Juan Pérez", Alumno: "Ana Soto" },
+      { Día: dias[0], Hora: hora, Sede: sede, Sala: 1, Curso: "Matemáticas", Profesor: "Juan Pérez", Alumno: "Luis Díaz" },
+      { Día: dias[1] ?? dias[0], Hora: hora, Sede: sede, Sala: 2, Curso: "Lenguaje", Profesor: "María Rojas", Alumno: "" },
+    ];
+    const ws = XLSX.utils.json_to_sheet(ejemplo, {
+      header: ["Día", "Hora", "Sede", "Sala", "Curso", "Profesor", "Alumno"],
+    });
+    ws["!cols"] = [{ wch: 12 }, { wch: 16 }, { wch: 18 }, { wch: 6 }, { wch: 20 }, { wch: 20 }, { wch: 22 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Horario");
+    const out = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+    const blob = new Blob([out], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `plantilla_horario_${horario.label.replace(/\s+/g, "_")}.xlsx`;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   async function handleImportFile(file: File) {
@@ -1352,10 +1380,17 @@ export default function AdminPage() {
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  El Excel es la fuente de verdad para este campus: al subir se reemplaza el <strong>{semester === "SEGUNDO" ? "2do" : "1er"} semestre</strong> (el que tienes activo arriba) con los cursos y alumnos del archivo. Los demás campus y el otro semestre no se tocan.
+                  Descarga la plantilla, complétala con tus columnas <strong>Día, Hora, Sede, Sala, Curso, Profesor y Alumno</strong>, y súbela.
+                  Se cargará en el <strong>{semester === "SEGUNDO" ? "2do" : "1er"} semestre</strong> (el activo arriba) del campus <strong>{horario.label}</strong>, reemplazando lo que hubiera. El otro semestre y los demás campus no se tocan.
                 </p>
               </div>
-              <div className="flex items-center gap-3 shrink-0 flex-wrap">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                <button
+                  onClick={handleDownloadTemplate}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-white border border-emerald-300 text-emerald-700 rounded-xl hover:bg-emerald-50 transition-colors"
+                >
+                  <FileSpreadsheet className="w-4 h-4" /> Descargar plantilla
+                </button>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -1374,7 +1409,7 @@ export default function AdminPage() {
                 >
                   {importing
                     ? <><RefreshCw className="w-4 h-4 animate-spin" /> Importando...</>
-                    : <><Upload className="w-4 h-4" /> Seleccionar archivo</>
+                    : <><Upload className="w-4 h-4" /> Subir archivo</>
                   }
                 </button>
               </div>

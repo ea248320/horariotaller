@@ -570,101 +570,120 @@ route("POST", "/api/schedule/import", async ({ query, formData }) => {
   if (!file) return json({ error: "No se recibió ningún archivo" }, 400);
   const XLSX = await import("xlsx");
 
-  // Con ?horario=<id> la importación afecta solo a ese campus; sin él, a todos.
-  const onlyHorario = query.get("horario") || null;
-  // Semestre destino: se importa TODO el Excel al semestre activo (?semester=).
+  // Importa al campus activo (?horario=) y al semestre activo (?semester=).
+  const targetHorario = query.get("horario");
   const target = (query.get("semester") ?? "").toUpperCase();
   const targetSemester = target === "SEGUNDO" ? "SEGUNDO" : "PRIMER";
+  if (!targetHorario) return json({ error: "No hay campus activo para importar" }, 400);
 
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]];
   const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
-  const dataRows = rows.slice(1).filter(r => r.length >= 5);
+  if (rows.length < 2) return json({ error: "El archivo está vacío o no tiene datos" }, 400);
 
-  // Vaciar el semestre destino (solo del campus indicado, si lo hay). El otro
-  // semestre no se toca.
+  // Detectar columnas por su encabezado (sin importar mayúsculas ni acentos).
+  const norm = (h: unknown) => String(h ?? "").trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const header = (rows[0] as unknown[]).map(norm);
+  const findCol = (...names: string[]) => {
+    for (const n of names) { const i = header.indexOf(n); if (i >= 0) return i; }
+    return -1;
+  };
+  const col = {
+    dia:      findCol("dia", "día"),
+    hora:     findCol("hora", "horario", "bloque"),
+    sede:     findCol("sede", "sucursal", "local"),
+    sala:     findCol("sala", "aula"),
+    curso:    findCol("curso", "asignatura", "materia", "ramo", "clase"),
+    profesor: findCol("profesor", "profesora", "docente", "profe"),
+    alumno:   findCol("alumno", "alumna", "estudiante", "nombre"),
+  };
+  const faltan = (["dia", "hora", "sede", "curso", "profesor"] as const)
+    .filter(k => col[k] < 0)
+    .map(k => k === "dia" ? "Día" : k.charAt(0).toUpperCase() + k.slice(1));
+  if (faltan.length) {
+    return json({ error: `Faltan columnas en el Excel: ${faltan.join(", ")}. Descarga la plantilla y úsala como base.` }, 400);
+  }
+
+  const DAY_NORM: Record<string, string> = {
+    lunes: "LUNES", lun: "LUNES", martes: "MARTES", mar: "MARTES",
+    miercoles: "MIERCOLES", mie: "MIERCOLES", jueves: "JUEVES", jue: "JUEVES",
+    viernes: "VIERNES", vie: "VIERNES", sabado: "SABADO", sab: "SABADO",
+    domingo: "DOMINGO", dom: "DOMINGO",
+  };
+
+  // Vaciar el semestre destino SOLO de este campus. El otro semestre y los
+  // demás campus no se tocan.
   let classes = load("classes").filter(c =>
-    c.semester !== targetSemester || (onlyHorario !== null && c.horario !== onlyHorario));
+    !(c.semester === targetSemester && c.horario === targetHorario));
   let students = load("students").filter(s =>
-    s.classSemester !== targetSemester || (onlyHorario !== null && s.classHorario !== onlyHorario));
+    !(s.classSemester === targetSemester && s.classHorario === targetHorario));
 
-  let totalCreated = 0, totalSkipped = 0, totalStudents = 0;
-  const allParseErrors: string[] = [];
-  const perCampus: Record<string, { students: number; created: number }> = {};
+  const defaultSede = load("horarios").find(h => h.id === targetHorario)?.sedes?.[0]?.name
+    ?? String(targetHorario);
 
-  // Importar para los campus que el cliente configuró. La columna 0 (Nivel)
-  // del Excel debe decir "SEDE <NOMBRE DEL CAMPUS>" (los 4 campus del formato
-  // original siguen soportados vía HORARIO_NIVEL).
-  const storedHorarios = load("horarios").filter(h => !onlyHorario || h.id === onlyHorario);
-  for (const h of storedHorarios) {
-    const horarioId = h.id;
-    const nivelFilter = (HORARIO_NIVEL[horarioId] ?? `SEDE ${String(h.name).toUpperCase()}`).toUpperCase();
-    const defaultSede = h.sedes?.[0]?.name ?? HORARIO_SEDES[horarioId]?.[0] ?? String(h.name).toUpperCase();
-    const matching = dataRows.filter(r => String(r[0]).trim().toUpperCase() === nivelFilter);
+  type Group = { day: string; time: string; sede: string; sala: number; course: string; teacher: string; students: string[] };
+  const groups = new Map<string, Group>();
+  let skipped = 0;
 
-    type Parsed = { students: string[]; sala: number | null; sede: string };
-    // Todo el Excel va al semestre activo, sin distinguir por columnas.
-    const byCode = new Map<string, Parsed>();
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i] as unknown[];
+    if (!r || r.length === 0) continue;
+    const cell = (c: number) => c >= 0 ? String(r[c] ?? "").trim() : "";
 
-    for (const r of matching) {
-      const clase = String(r[2]).trim();
-      let sala: number | null = null;
-      const salaMatch = clase.match(/SALA\s+(\d+)/i);
-      if (salaMatch) sala = parseInt(salaMatch[1], 10);
-      const withoutSala = clase.replace(/\s*-?\s*SALA\s+\d+/i, "").trim();
-      const dashParts = withoutSala.split(/\s*-\s+|\s+-\s*/);
-      const classCode = dashParts[0].trim().replace(/(\d{2}):(\d{2})/g, "$1.$2");
-      const sedeRaw = dashParts.slice(1).join(" ").trim();
-      const sede = normalizeSede(sedeRaw, defaultSede);
-      const nombre = String(r[3] ?? "").trim();
-      const apellido = String(r[4] ?? "").trim();
-      if (!nombre && !apellido) continue;
-      const fullName = `${nombre} ${apellido}`.trim();
-      if (!byCode.has(classCode)) byCode.set(classCode, { students: [], sala, sede });
-      byCode.get(classCode)!.students.push(fullName);
-    }
+    const diaRaw = norm(cell(col.dia));
+    const day = DAY_NORM[diaRaw] ?? cell(col.dia).toUpperCase();
+    const time = cell(col.hora);
+    const course = cell(col.curso).toUpperCase();
+    const teacher = cell(col.profesor).toUpperCase();
+    const sede = (cell(col.sede) || defaultSede).toUpperCase();
+    const salaNum = parseInt(cell(col.sala), 10);
+    const sala = Number.isFinite(salaNum) && salaNum > 0 ? salaNum : 1;
+    const alumno = cell(col.alumno);
 
-    let created = 0;
-    for (const [classCode, info] of byCode) {
-      const parsed = parseClassCode(classCode);
-      if (!parsed || !parsed.course || !parsed.day || !parsed.time) {
-        allParseErrors.push(classCode);
-        totalSkipped++;
-        continue;
-      }
+    // Fila sin datos de clase suficientes → se omite
+    if (!day || !time || !course || !teacher) { skipped++; continue; }
+
+    const key = `${course}|${day}|${time}|${teacher}|${sede}`;
+    if (!groups.has(key)) groups.set(key, { day, time, sede, sala, course, teacher, students: [] });
+    if (alumno) groups.get(key)!.students.push(alumno);
+  }
+
+  let created = 0, totalStudents = 0;
+  for (const g of groups.values()) {
+    const classCode = buildClassCode(g.course, g.day, g.time, g.teacher);
+    // Evitar duplicar si dos grupos generan el mismo código
+    if (!classes.some(c => c.classCode === classCode && c.semester === targetSemester && c.horario === targetHorario)) {
       classes.push({
-        classCode, horario: horarioId,
-        course: parsed.course, day: parsed.day, time: parsed.time, teacher: parsed.teacher,
-        sede: info.sede, sala: info.sala ?? 1, semester: targetSemester, createdAt: nowIso(),
+        classCode, horario: targetHorario,
+        course: g.course, day: g.day, time: g.time, teacher: g.teacher,
+        sede: g.sede, sala: g.sala, semester: targetSemester, createdAt: nowIso(),
       });
-      for (const studentName of info.students) {
-        students.push({
-          id: nextId("students"),
-          classCode, classSemester: targetSemester, classHorario: horarioId,
-          studentName, createdAt: nowIso(),
-        });
-      }
       created++;
-      totalCreated++;
     }
-
-    totalStudents += matching.length;
-    perCampus[horarioId] = { students: matching.length, created };
-    broadcastScheduleChange(horarioId);
+    for (const studentName of g.students) {
+      students.push({
+        id: nextId("students"),
+        classCode, classSemester: targetSemester, classHorario: targetHorario,
+        studentName, createdAt: nowIso(),
+      });
+      totalStudents++;
+    }
   }
 
   save("classes", classes);
   save("students", students);
+  broadcastScheduleChange(targetHorario);
 
   return json({
     ok: true,
-    created: totalCreated,
+    created,
     updated: 0,
-    skipped: totalSkipped,
+    skipped,
     totalStudents,
-    perCampus,
-    parseErrors: allParseErrors.slice(0, 20),
+    perCampus: { [targetHorario]: { students: totalStudents, created } },
+    parseErrors: [],
   });
 });
 

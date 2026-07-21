@@ -125,7 +125,16 @@ export default function Navbar() {
   const { horario } = useHorario();
   const { settings } = useSettings();
   const { notifications } = useNotifications();
-  const { currentUser, clearUser } = useCurrentUser();
+  const { currentUser, setCurrentUser } = useCurrentUser();
+
+  // Cambiar el nombre con el que apareces (opcional; para presencia/atribución).
+  function renameUser() {
+    if (!currentUser) return;
+    const nuevo = window.prompt("¿Con qué nombre quieres aparecer? (opcional)", currentUser.name);
+    if (nuevo === null) return; // canceló
+    const name = nuevo.trim() || "Administración";
+    setCurrentUser({ ...currentUser, name });
+  }
 
   // Reload config if it changes (e.g. after save)
   useEffect(() => { setNavConfig(getNavConfig()); }, []);
@@ -213,8 +222,8 @@ export default function Navbar() {
 
               {currentUser && (
                 <button
-                  onClick={clearUser}
-                  title={`${currentUser.name} — clic para cambiar`}
+                  onClick={renameUser}
+                  title={`${currentUser.name} — clic para cambiar tu nombre (opcional)`}
                   className="ml-1 flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-muted transition-colors"
                 >
                   <UserAvatar name={currentUser.name} color={currentUser.color} size="sm" />

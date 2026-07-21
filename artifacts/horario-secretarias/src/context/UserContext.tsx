@@ -22,13 +22,24 @@ const UserContext = createContext<UserContextType>({
 
 const LS_KEY = "horario_current_user";
 
-function loadFromStorage(): CurrentUser | null {
+// Identidad por defecto: la app entra directo como administradora, sin pedir
+// nada. Quien quiera aparecer con su nombre (para presencia y atribución)
+// puede cambiarlo desde la barra superior, pero es opcional.
+const DEFAULT_USER: CurrentUser = {
+  id: null,
+  name: "Administración",
+  role: "admin",
+  horarioId: "",
+  color: "violet",
+};
+
+function loadFromStorage(): CurrentUser {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return null;
+    if (!raw) return { ...DEFAULT_USER };
     return JSON.parse(raw) as CurrentUser;
   } catch {
-    return null;
+    return { ...DEFAULT_USER };
   }
 }
 
@@ -44,7 +55,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const clearUser = () => setCurrentUser(null);
+  // "Salir" vuelve a la identidad por defecto (no deja la app sin usuario).
+  const clearUser = () => setCurrentUser({ ...DEFAULT_USER });
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser, clearUser }}>

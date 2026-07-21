@@ -11,7 +11,6 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import ToastContainer from "@/components/ToastContainer";
 import Navbar from "@/components/Navbar";
 import { UserProvider } from "@/context/UserContext";
-import UserSelectionModal from "@/components/UserSelectionModal";
 import { CLOUD_MODE } from "@/lib/supabaseClient";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
@@ -90,7 +89,6 @@ function Router() {
       <HorarioProvider>
         <UserProvider>
         <NotificationProvider>
-          <UserSelectionModal />
           <div className="min-h-screen flex flex-col bg-background">
             <Navbar />
             <ToastContainer />
