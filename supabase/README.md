@@ -11,6 +11,8 @@ regla se impone en la base de datos, no en la aplicación.
 3. Repite con `migrations/0002_signup.sql`.
 4. Repite con `migrations/0003_policies_optimizadas.sql` (optimiza las políticas
    y elimina las advertencias de rendimiento del Security Advisor).
+5. Repite con `migrations/0004_planes.sql` (planes/versiones: las cuentas nuevas
+   nacen "pendientes" sin acceso; la dueña asigna el plan que activa los módulos).
 
 Aplícalas siempre en orden numérico. Cada archivo nuevo (`0004`, `0005`…) es un
 cambio incremental: se ejecuta una vez y queda registrado en tu historial.

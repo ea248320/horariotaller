@@ -16,6 +16,8 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const CloudLoginPage   = lazy(() => import("@/pages/CloudLoginPage"));
 const CloudWelcome     = lazy(() => import("@/pages/CloudWelcome"));
+const CloudPending     = lazy(() => import("@/pages/CloudPending"));
+const CloudOwnerPanel  = lazy(() => import("@/pages/CloudOwnerPanel"));
 
 const HomePage         = lazy(() => import("@/pages/HomePage"));
 const HorarioPage      = lazy(() => import("@/pages/HorarioPage"));
@@ -121,13 +123,25 @@ function Router() {
 // construimos la migración completa, tras el login se muestra la pantalla de
 // bienvenida que confirma la conexión. (En modo local no se usa.)
 function CloudGate() {
-  const { session, loading } = useAuth();
+  const { session, loading, negocio, esAdminPlataforma } = useAuth();
   if (loading) return <PageLoader />;
-  return (
-    <Suspense fallback={<PageLoader />}>
-      {session ? <CloudWelcome /> : <CloudLoginPage />}
-    </Suspense>
-  );
+
+  let screen: React.ReactNode;
+  if (!session) {
+    screen = <CloudLoginPage />;
+  } else if (esAdminPlataforma) {
+    // La dueña de la plataforma entra a su panel central de negocios
+    screen = <CloudOwnerPanel />;
+  } else if (!negocio || negocio.plan === "pendiente" || negocio.activo === false) {
+    // Cuenta sin plan activo: no puede usar la plataforma todavía
+    screen = <CloudPending />;
+  } else {
+    // Cuenta activa con plan: (por ahora) pantalla de bienvenida;
+    // aquí se conectará la aplicación completa en la nube.
+    screen = <CloudWelcome />;
+  }
+
+  return <Suspense fallback={<PageLoader />}>{screen}</Suspense>;
 }
 
 function App() {
