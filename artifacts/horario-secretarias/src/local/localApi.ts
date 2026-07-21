@@ -601,10 +601,13 @@ route("POST", "/api/schedule/copy-semester", ({ query, body }) => {
   return json({ ok: true, created, copiedStudents });
 });
 
-route("POST", "/api/schedule/import", async ({ formData }) => {
+route("POST", "/api/schedule/import", async ({ query, formData }) => {
   const file = formData?.get("file") as File | null;
   if (!file) return json({ error: "No se recibió ningún archivo" }, 400);
   const XLSX = await import("xlsx");
+
+  // Con ?horario=<id> la importación afecta solo a ese campus; sin él, a todos.
+  const onlyHorario = query.get("horario") || null;
 
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: "array" });
@@ -612,10 +615,12 @@ route("POST", "/api/schedule/import", async ({ formData }) => {
   const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
   const dataRows = rows.slice(1).filter(r => r.length >= 5);
 
-  // Vaciar PRIMER en todos los campus; SEGUNDO se conserva y solo se actualizan
-  // las listas de alumnos de las clases presentes en el Excel.
-  let classes = load("classes").filter(c => c.semester !== "PRIMER");
-  let students = load("students").filter(s => s.classSemester !== "PRIMER");
+  // Vaciar PRIMER (solo del campus indicado, si lo hay); SEGUNDO se conserva y
+  // solo se actualizan las listas de alumnos de las clases presentes en el Excel.
+  let classes = load("classes").filter(c =>
+    c.semester !== "PRIMER" || (onlyHorario !== null && c.horario !== onlyHorario));
+  let students = load("students").filter(s =>
+    s.classSemester !== "PRIMER" || (onlyHorario !== null && s.classHorario !== onlyHorario));
 
   let totalCreated = 0, totalSkipped = 0, totalStudents = 0;
   const allParseErrors: string[] = [];
@@ -624,7 +629,7 @@ route("POST", "/api/schedule/import", async ({ formData }) => {
   // Importar para los campus que el cliente configuró. La columna 0 (Nivel)
   // del Excel debe decir "SEDE <NOMBRE DEL CAMPUS>" (los 4 campus del formato
   // original siguen soportados vía HORARIO_NIVEL).
-  const storedHorarios = load("horarios");
+  const storedHorarios = load("horarios").filter(h => !onlyHorario || h.id === onlyHorario);
   for (const h of storedHorarios) {
     const horarioId = h.id;
     const nivelFilter = (HORARIO_NIVEL[horarioId] ?? `SEDE ${String(h.name).toUpperCase()}`).toUpperCase();

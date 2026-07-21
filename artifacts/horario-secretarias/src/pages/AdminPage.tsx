@@ -103,18 +103,13 @@ async function apiDeleteClass(classCode: string, semester: string, horario: stri
   return res.json();
 }
 
-async function apiResetAll(horarioId: string) {
-  const res = await fetch(apiUrl(`/api/schedule/classes?horario=${horarioId}`), { method: "DELETE" });
-  return res.json();
-}
-
-async function apiWipeSchedule() {
-  const res = await fetch(apiUrl("/api/schedule/wipe"), { method: "DELETE" });
+async function apiWipeCampus(horarioId: string) {
+  const res = await fetch(apiUrl(`/api/schedule/classes?horario=${encodeURIComponent(horarioId)}`), { method: "DELETE" });
   return res.json();
 }
 
 const emptyForm = {
-  sede: "LAS ENCINAS" as string,
+  sede: "" as string,
   course: "",
   day: "",
   time: "",
@@ -486,14 +481,21 @@ function PlatformSettingsCard() {
 }
 
 export default function AdminPage() {
-  const { horarioId, horario, horarioList, reloadHorarios } = useHorario();
+  const { horarioId, horario, horarioList, reloadHorarios, setHorarioId } = useHorario();
   const [allData, setAllData] = useState<ClassEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   // For the "Nueva Clase" form: which campus and which sede
   const defaultCampus = horarioList[0]?.id ?? horarioId;
-  const [formHorario, setFormHorario] = useState(defaultCampus);
+  const [formHorario, setFormHorario] = useState(horarioId || defaultCampus);
   const formCampus = horarioList.find(h => h.id === formHorario) ?? horarioList[0] ?? horario;
+  useEffect(() => {
+    if (horarioId) {
+      setFormHorario(horarioId);
+      setForm(f => ({ ...f, sede: horario.sedes?.[0] ?? "" }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [horarioId]);
   const [form, setForm] = useState(() => ({
     ...emptyForm,
     sede: horarioList[0]?.sedes?.[0] ?? horario.sedes?.[0] ?? "",
@@ -502,13 +504,11 @@ export default function AdminPage() {
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [resetting, setResetting] = useState(false);
-  const [confirmWipe, setConfirmWipe] = useState(false);
+    const [confirmWipe, setConfirmWipe] = useState(false);
   const [wiping, setWiping] = useState(false);
-  const [wipeResult, setWipeResult] = useState<{ deletedClasses: number } | null>(null);
+  const [wipeResult, setWipeResult] = useState<{ deleted: number } | null>(null);
   const [search, setSearch] = useState("");
-  const [filterHorario, setFilterHorario] = useState(horarioId);
+  // El Admin siempre trabaja sobre el campus activo (horarioId)
   const [filterSede, setFilterSede] = useState("");
   const [filterCourse, setFilterCourse] = useState("");
   const [filterSemester, setFilterSemester] = useState("");
@@ -562,7 +562,7 @@ export default function AdminPage() {
     classes: number; students: number; classesWithStudents: number; existingSegundo: number;
   } | null>(null);
 
-  const copyTarget = filterHorario || horarioId;
+  const copyTarget = horarioId;
   const copyTargetLabel = horarioList.find(h => h.id === copyTarget)?.label ?? copyTarget;
 
   async function openCopyWizard() {
@@ -651,8 +651,9 @@ export default function AdminPage() {
   }
 
   const fetchData = useCallback(async () => {
+    if (!horarioId) { setAllData([]); setLoading(false); return; }
     try {
-      const res = await fetch(apiUrl("/api/schedule?horario=ALL"));
+      const res = await fetch(apiUrl(`/api/schedule?horario=${encodeURIComponent(horarioId)}`));
       if (!res.ok) throw new Error("API error");
       const json = await res.json();
       setAllData(json);
@@ -662,21 +663,18 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [horarioId]);
 
   useEffect(() => {
     fetchData();
-    // SSE: subscribe to all campus streams for real-time updates
-    const streams = horarioList.map(h => {
-      const es = new EventSource(apiUrl(`/api/schedule/stream?horarioId=${encodeURIComponent(h.id)}`));
-      es.onmessage = () => fetchData();
-      return es;
-    });
+    if (!horarioId) return;
+    // SSE: solo el campus que se está administrando
+    const es = new EventSource(apiUrl(`/api/schedule/stream?horarioId=${encodeURIComponent(horarioId)}`));
+    es.onmessage = () => fetchData();
     // Fallback poll cada 30s solo si SSE falla
     const interval = setInterval(fetchData, 30_000);
-    return () => { streams.forEach(es => es.close()); clearInterval(interval); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchData]);
+    return () => { es.close(); clearInterval(interval); };
+  }, [fetchData, horarioId]);
 
   const fetchTeam = useCallback(async () => {
     setTeamLoading(true);
@@ -729,7 +727,6 @@ export default function AdminPage() {
 
   const filteredList = useMemo(() => {
     return allData.filter(e => {
-      if (filterHorario && e.horario !== filterHorario) return false;
       if (filterSede && e.sede !== filterSede) return false;
       if (filterCourse && e.course !== filterCourse) return false;
       if (filterSemester) {
@@ -750,12 +747,12 @@ export default function AdminPage() {
       }
       return true;
     });
-  }, [allData, filterHorario, filterSede, filterCourse, filterSemester, search]);
+  }, [allData, filterSede, filterCourse, filterSemester, search]);
 
-  const statsByCampus = useMemo(() => {
+  const statsBySede = useMemo(() => {
     const map: Record<string, number> = {};
     for (const e of allData) {
-      const key = e.horario ?? "?";
+      const key = e.sede ?? "?";
       map[key] = (map[key] ?? 0) + 1;
     }
     return map;
@@ -763,7 +760,6 @@ export default function AdminPage() {
 
   const existingCourses = useMemo(() => {
     let base = allData;
-    if (filterHorario) base = base.filter(e => e.horario === filterHorario);
     if (filterSede)    base = base.filter(e => e.sede === filterSede);
     if (filterSemester) {
       if (filterSemester === "PRIMER")  base = base.filter(e => e.semester === "PRIMER"  || e.semester === "ANUAL");
@@ -771,7 +767,7 @@ export default function AdminPage() {
       if (filterSemester === "ANUAL")   base = base.filter(e => e.semester === "ANUAL");
     }
     return [...new Set(base.map(e => e.course))].sort();
-  }, [allData, filterHorario, filterSede, filterSemester]);
+  }, [allData, filterSede, filterSemester]);
 
   const editSemesterCourses = useMemo(() => {
     if (!editingCode) return COURSES;
@@ -915,22 +911,11 @@ export default function AdminPage() {
     }
   }
 
-  async function handleReset() {
-    setResetting(true);
-    try {
-      await apiResetAll(horarioId);
-      setConfirmReset(false);
-      fetchData();
-    } finally {
-      setResetting(false);
-    }
-  }
-
   async function handleWipe() {
     setWiping(true);
     setWipeResult(null);
     try {
-      const json = await apiWipeSchedule();
+      const json = await apiWipeCampus(horarioId);
       if (!json.error) {
         setWipeResult(json);
         setConfirmWipe(false);
@@ -952,7 +937,7 @@ export default function AdminPage() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch(apiUrl("/api/schedule/import"), { method: "POST", body: formData });
+      const res = await fetch(apiUrl(`/api/schedule/import?horario=${encodeURIComponent(horarioId)}`), { method: "POST", body: formData });
       const json = await res.json();
       if (json.error) {
         setImportError(json.error);
@@ -974,36 +959,24 @@ export default function AdminPage() {
         <div className="mb-6 flex items-start justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground mb-1">Panel Administrativo</h1>
-            <p className="text-muted-foreground text-sm">Crea y gestiona los cursos del año académico.</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="text-muted-foreground text-sm">Estás administrando el campus:</p>
+              <div className="relative">
+                <select
+                  value={horarioId}
+                  onChange={e => setHorarioId(e.target.value)}
+                  className="pl-3 pr-8 py-1.5 text-sm font-bold border border-primary/30 rounded-xl bg-primary/5 text-primary focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
+                >
+                  {horarioList.map(h => (
+                    <option key={h.id} value={h.id}>{h.emoji} {h.label}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-primary pointer-events-none" />
+              </div>
+              <p className="text-muted-foreground text-xs">Todo lo que hagas aquí aplica solo a este campus.</p>
+            </div>
           </div>
 
-          {!confirmReset ? (
-            <button
-              onClick={() => setConfirmReset(true)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-destructive border border-destructive/30 rounded-xl bg-destructive/5 hover:bg-destructive/10 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              Limpiar todo — Nuevo año
-            </button>
-          ) : (
-            <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-2.5">
-              <AlertTriangle className="w-4 h-4 text-destructive shrink-0" />
-              <span className="text-sm font-medium text-destructive">¿Eliminar TODAS las clases?</span>
-              <button
-                onClick={handleReset}
-                disabled={resetting}
-                className="ml-2 px-3 py-1 text-xs font-bold bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors disabled:opacity-60"
-              >
-                {resetting ? "Eliminando..." : "Confirmar"}
-              </button>
-              <button
-                onClick={() => setConfirmReset(false)}
-                className="px-3 py-1 text-xs font-bold bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          )}
         </div>
 
         {apiError && (
@@ -1234,23 +1207,22 @@ export default function AdminPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           <div className="bg-card rounded-2xl border border-border/50 p-4 text-center shadow-sm">
             <div className="text-2xl font-display font-bold text-primary">{allData.length}</div>
-            <div className="text-xs text-muted-foreground mt-1">Total clases</div>
+            <div className="text-xs text-muted-foreground mt-1">Clases en {horario.label}</div>
           </div>
-          {horarioList.map(h => (
+          {(horario.sedesInfo ?? horario.sedes.map(s => ({ name: s, displayName: displaySede(s), maxSalas: 6 }))).map(s => (
             <button
-              key={h.id}
-              onClick={() => setFilterHorario(filterHorario === h.id ? "" : h.id)}
+              key={s.name}
+              onClick={() => setFilterSede(filterSede === s.name ? "" : s.name)}
               className={`rounded-2xl border p-4 text-center shadow-sm transition-all ${
-                filterHorario === h.id
+                filterSede === s.name
                   ? "bg-primary/10 border-primary/40 ring-1 ring-primary/30"
                   : "bg-card border-border/50 hover:border-primary/30 hover:bg-muted/40"
               }`}
             >
-              <div className="text-lg font-display font-bold text-foreground">{h.emoji}</div>
-              <div className={`text-xl font-display font-bold ${filterHorario === h.id ? "text-primary" : "text-secondary"}`}>
-                {statsByCampus[h.id] ?? 0}
+              <div className={`text-xl font-display font-bold ${filterSede === s.name ? "text-primary" : "text-secondary"}`}>
+                {statsBySede[s.name] ?? 0}
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5 truncate">{h.label}</div>
+              <div className="text-xs text-muted-foreground mt-0.5 truncate">{s.displayName}</div>
             </button>
           ))}
         </div>
@@ -1384,11 +1356,11 @@ export default function AdminPage() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="font-display font-bold text-foreground">Importar desde Excel</h2>
                   <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200">
-                    Todos los campus
+                    Solo {horario.label}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  El Excel es la fuente de verdad: al subir se borra todo el horario y se cargan los cursos y alumnos como 1er Semestre en todos los campus.
+                  El Excel es la fuente de verdad para este campus: al subir se reemplaza su 1er semestre con los cursos y alumnos del archivo. Los demás campus no se tocan.
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0 flex-wrap">
@@ -1422,7 +1394,7 @@ export default function AdminPage() {
                 <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span className="text-sm font-bold text-emerald-800">Importación completada — todos los campus</span>
+                    <span className="text-sm font-bold text-emerald-800">Importación completada — {horario.label}</span>
                   </div>
                   <div className="flex flex-wrap gap-5 text-sm">
                     <div><span className="font-bold text-emerald-700">{importResult.totalStudents}</span><span className="text-emerald-600"> alumnos procesados</span></div>
@@ -1487,7 +1459,7 @@ export default function AdminPage() {
               <div className="flex-1">
                 <h2 className="font-display font-bold text-foreground">Vaciar horario</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Elimina <strong>todas las clases y alumnos de todos los semestres</strong> en todos los campus. Los talleres no se tocan. Úsalo antes de subir el Excel para empezar desde cero.
+                  Elimina <strong>todas las clases y alumnos de todos los semestres</strong> del campus {horario.label}. Los talleres y los demás campus no se tocan.
                 </p>
               </div>
               <div className="shrink-0">
@@ -1525,7 +1497,7 @@ export default function AdminPage() {
                 <div className="bg-green-50 border border-green-200 rounded-2xl px-4 py-3 flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
                   <span className="text-sm text-green-800 font-medium">
-                    Horario vaciado — {wipeResult.deletedClasses} clases eliminadas. Ya puedes subir el Excel.
+                    Horario vaciado — {wipeResult.deleted} clases eliminadas de este campus. Ya puedes subir el Excel.
                   </span>
                 </div>
               </div>
@@ -1689,25 +1661,11 @@ export default function AdminPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                {/* Campus selector */}
+                {/* Campus activo (fijo: el Admin trabaja por campus) */}
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Campus</label>
-                  <div className="relative">
-                    <select
-                      value={formHorario}
-                      onChange={e => {
-                        const campusId = e.target.value;
-                        setFormHorario(campusId);
-                        const campus = horarioList.find(h => h.id === campusId);
-                        setForm(f => ({ ...f, sede: campus?.sedes?.[0] ?? "" }));
-                      }}
-                      className="w-full px-3 py-2.5 text-sm border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground appearance-none pr-8"
-                    >
-                      {horarioList.map(h => (
-                        <option key={h.id} value={h.id}>{h.emoji} {h.label}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  <div className="px-3 py-2.5 text-sm border border-border rounded-xl bg-muted/40 text-foreground font-semibold">
+                    {horario.emoji} {horario.label}
                   </div>
                 </div>
 
@@ -1867,7 +1825,7 @@ export default function AdminPage() {
                   <div>
                     <h2 className="font-display font-bold text-foreground">Todas las clases</h2>
                     <p className="text-xs text-muted-foreground">
-                      {filteredList.length} de {allData.length} — todos los campus
+                      {filteredList.length} de {allData.length} — campus {horario.label}
                     </p>
                   </div>
                 </div>
@@ -1884,24 +1842,14 @@ export default function AdminPage() {
                     className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
                   />
                 </div>
-                <select
-                  value={filterHorario}
-                  onChange={e => { setFilterHorario(e.target.value); setFilterSede(""); }}
-                  className="px-3 py-2 text-sm border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
-                >
-                  <option value="">Todos los campus</option>
-                  {horarioList.map(h => (
-                    <option key={h.id} value={h.id}>{h.emoji} {h.label}</option>
-                  ))}
-                </select>
-                {filterHorario && (
+                {horario.sedes.length > 1 && (
                   <select
                     value={filterSede}
                     onChange={e => setFilterSede(e.target.value)}
                     className="px-3 py-2 text-sm border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
                   >
                     <option value="">Todas las sedes</option>
-                    {(horarioList.find(h => h.id === filterHorario)?.sedes ?? []).map(s => (
+                    {horario.sedes.map(s => (
                       <option key={s} value={s}>{displaySede(s)}</option>
                     ))}
                   </select>
@@ -1964,7 +1912,6 @@ export default function AdminPage() {
                     <thead className="sticky top-0 z-10">
                       <tr className="bg-muted/70 border-b border-border/50 text-left">
                         <th className="px-4 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Código</th>
-                        <th className="px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Campus</th>
                         <th className="px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sede</th>
                         <th className="px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Día</th>
                         <th className="px-3 py-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Horario</th>
@@ -1999,12 +1946,6 @@ export default function AdminPage() {
                                 </span>
                               </div>
                               <div className="text-xs text-muted-foreground mt-0.5 font-mono">{entry.classCode}</div>
-                            </td>
-                            <td className="px-3 py-3 text-xs text-muted-foreground whitespace-nowrap">
-                              {(() => {
-                                const c = horarioList.find(h => h.id === entry.horario);
-                                return c ? <span title={c.label}>{c.emoji} <span className="hidden sm:inline">{c.label}</span></span> : (entry.horario ?? "—");
-                              })()}
                             </td>
                             <td className="px-3 py-3 text-xs text-muted-foreground whitespace-nowrap">
                               {displaySede(entry.sede)}
