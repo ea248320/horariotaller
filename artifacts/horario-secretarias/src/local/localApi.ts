@@ -538,8 +538,31 @@ route("DELETE", "/api/schedule/wipe", () => {
   return json({ ok: true, deletedClasses: count });
 });
 
-route("POST", "/api/schedule/copy-semester", ({ query }) => {
+// Vista previa del paso de semestre: cuántas clases y alumnos se copiarían
+// y cuántas clases del 2º semestre serían reemplazadas.
+route("GET", "/api/schedule/copy-semester/preview", ({ query }) => {
+  const horarioVal = (query.get("horario") || "").toUpperCase();
+  const classes = load("classes");
+  const sourceClasses = classes.filter(c => c.horario === horarioVal && ["PRIMER", "ANUAL"].includes(c.semester));
+  const students = load("students");
+  const sourceCodes = new Set(sourceClasses.map(c => c.classCode));
+  const sourceStudents = students.filter(s =>
+    sourceCodes.has(s.classCode) && ["PRIMER", "ANUAL"].includes(s.classSemester) && s.classHorario === horarioVal);
+  const existingSegundo = classes.filter(c => c.horario === horarioVal && c.semester === "SEGUNDO").length;
+  return json({
+    classes: sourceClasses.length,
+    students: sourceStudents.length,
+    classesWithStudents: new Set(sourceStudents.map(s => s.classCode)).size,
+    existingSegundo,
+  });
+});
+
+// Copia las clases del 1er semestre (y anuales) al 2º semestre.
+// body.mode: "with-students" (por defecto) copia también las listas de alumnos;
+// "without-students" copia solo la estructura de clases, con inscripción nueva.
+route("POST", "/api/schedule/copy-semester", ({ query, body }) => {
   const horarioVal = (query.get("horario") || "TEMUCO").toUpperCase();
+  const withStudents = body?.mode !== "without-students";
   const classes = load("classes");
   const sourceClasses = classes.filter(c => c.horario === horarioVal && ["PRIMER", "ANUAL"].includes(c.semester));
   if (!sourceClasses.length) {
@@ -557,17 +580,17 @@ route("POST", "/api/schedule/copy-semester", ({ query }) => {
   const keptClasses = classes.filter(c => !(c.horario === horarioVal && c.semester === "SEGUNDO"));
   const keptStudents = students.filter(s => !(s.classHorario === horarioVal && s.classSemester === "SEGUNDO"));
 
-  let created = 0;
+  let created = 0, copiedStudents = 0;
   for (const cls of sourceClasses) {
-    const noStudents = /\bINT\b/i.test(cls.course) || /\bM2\b/i.test(cls.course);
     keptClasses.push({ ...cls, semester: "SEGUNDO", createdAt: nowIso() });
-    if (!noStudents) {
+    if (withStudents) {
       for (const name of studentsByCode[cls.classCode] ?? []) {
         keptStudents.push({
           id: nextId("students"),
           classCode: cls.classCode, classSemester: "SEGUNDO", classHorario: horarioVal,
           studentName: name, createdAt: nowIso(),
         });
+        copiedStudents++;
       }
     }
     created++;
@@ -575,7 +598,7 @@ route("POST", "/api/schedule/copy-semester", ({ query }) => {
   save("classes", keptClasses);
   save("students", keptStudents);
   broadcastScheduleChange(horarioVal);
-  return json({ ok: true, created });
+  return json({ ok: true, created, copiedStudents });
 });
 
 route("POST", "/api/schedule/import", async ({ formData }) => {

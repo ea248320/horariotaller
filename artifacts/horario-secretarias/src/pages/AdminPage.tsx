@@ -554,20 +554,41 @@ export default function AdminPage() {
   const [addingSedeFor, setAddingSedeFor] = useState<string | null>(null);
   const [sedeError, setSedeError] = useState("");
   const [copyingSemester, setCopyingSemester] = useState(false);
-  const [copyResult, setCopyResult] = useState<{ created: number } | null>(null);
+  const [copyResult, setCopyResult] = useState<{ created: number; copiedStudents: number } | null>(null);
   const [copyError, setCopyError] = useState("");
-  const [confirmCopy, setConfirmCopy] = useState(false);
+  const [copyOpen, setCopyOpen] = useState(false);
+  const [copyMode, setCopyMode] = useState<"with-students" | "without-students">("with-students");
+  const [copyPreview, setCopyPreview] = useState<{
+    classes: number; students: number; classesWithStudents: number; existingSegundo: number;
+  } | null>(null);
+
+  const copyTarget = filterHorario || horarioId;
+  const copyTargetLabel = horarioList.find(h => h.id === copyTarget)?.label ?? copyTarget;
+
+  async function openCopyWizard() {
+    setCopyResult(null);
+    setCopyError("");
+    setCopyPreview(null);
+    setCopyOpen(true);
+    try {
+      const res = await fetch(apiUrl(`/api/schedule/copy-semester/preview?horario=${encodeURIComponent(copyTarget)}`));
+      setCopyPreview(await res.json());
+    } catch { setCopyError("No se pudo cargar la vista previa."); }
+  }
+
   async function handleCopySemester() {
-    setConfirmCopy(false);
     setCopyingSemester(true);
     setCopyResult(null);
     setCopyError("");
     try {
-      const target = filterHorario || horarioId;
-      const res = await fetch(apiUrl(`/api/schedule/copy-semester?horario=${target}`), { method: "POST" });
+      const res = await fetch(apiUrl(`/api/schedule/copy-semester?horario=${encodeURIComponent(copyTarget)}`), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: copyMode }),
+      });
       const json = await res.json();
       if (json.error) { setCopyError(json.error || "Error desconocido"); }
-      else { setCopyResult({ created: json.created }); fetchData(); }
+      else { setCopyResult({ created: json.created, copiedStudents: json.copiedStudents ?? 0 }); setCopyOpen(false); fetchData(); }
     } catch { setCopyError("Error de conexión."); }
     finally { setCopyingSemester(false); }
   }
@@ -1512,59 +1533,136 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* ── Copiar 1er → 2do Semestre ───────────────────────────────── */}
+        {/* ── Pasar clases al 2do semestre (asistente con vista previa) ── */}
         <div className="mb-6 bg-card border border-border/50 rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
               <RefreshCw className="w-4 h-4 text-indigo-600" />
             </div>
             <div className="flex-1">
-              <h2 className="font-display font-bold text-foreground text-sm">Copiar 1er Semestre → 2do Semestre</h2>
+              <h2 className="font-display font-bold text-foreground text-sm">Pasar clases al 2do semestre</h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Copia todos los cursos del 1er semestre al 2do. Los cursos <strong>INT</strong> y <strong>M2</strong> se copian sin alumnos (inscripción nueva); el resto conserva su lista.
-                {filterHorario ? ` Solo aplica al campus seleccionado (${horarioList.find(h => h.id === filterHorario)?.label ?? filterHorario}).` : " Aplica al campus activo."}
+                Copia las clases del 1er semestre (y anuales) del campus <strong>{copyTargetLabel}</strong> al 2do semestre.
+                Antes de confirmar verás exactamente qué se va a copiar.
               </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {confirmCopy ? (
-                <>
-                  <button
-                    onClick={handleCopySemester}
-                    disabled={copyingSemester}
-                    className="px-3 py-2 text-xs font-bold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors"
-                  >
-                    {copyingSemester ? "Copiando..." : "Sí, reemplazar"}
-                  </button>
-                  <button
-                    onClick={() => setConfirmCopy(false)}
-                    className="px-3 py-2 text-xs font-semibold bg-muted text-muted-foreground rounded-xl hover:bg-muted/80 transition-colors"
-                  >
-                    Cancelar
-                  </button>
-                </>
+            {!copyOpen && (
+              <button
+                onClick={openCopyWizard}
+                disabled={copyingSemester || !copyTarget}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors shrink-0"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Iniciar
+              </button>
+            )}
+          </div>
+
+          {copyOpen && (
+            <div className="px-5 pb-5 space-y-4 border-t border-border/50 pt-4">
+              {!copyPreview ? (
+                <p className="text-sm text-muted-foreground">Cargando vista previa...</p>
+              ) : copyPreview.classes === 0 ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                  <p className="text-sm text-amber-800 font-medium">
+                    El 1er semestre de {copyTargetLabel} no tiene clases todavía, así que no hay nada que copiar.
+                  </p>
+                </div>
               ) : (
-                <button
-                  onClick={() => { setCopyResult(null); setCopyError(""); setConfirmCopy(true); }}
-                  disabled={copyingSemester}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Copiar semestre
-                </button>
+                <>
+                  {/* Qué va a pasar, en números */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-muted/40 rounded-xl px-3 py-2.5 text-center">
+                      <p className="text-xl font-display font-bold text-foreground">{copyPreview.classes}</p>
+                      <p className="text-[11px] text-muted-foreground">clases se copiarán</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-xl px-3 py-2.5 text-center">
+                      <p className="text-xl font-display font-bold text-foreground">{copyPreview.students}</p>
+                      <p className="text-[11px] text-muted-foreground">alumnos inscritos hoy</p>
+                    </div>
+                    <div className={`rounded-xl px-3 py-2.5 text-center ${copyPreview.existingSegundo > 0 ? "bg-amber-50 border border-amber-200" : "bg-muted/40"}`}>
+                      <p className={`text-xl font-display font-bold ${copyPreview.existingSegundo > 0 ? "text-amber-700" : "text-foreground"}`}>{copyPreview.existingSegundo}</p>
+                      <p className={`text-[11px] ${copyPreview.existingSegundo > 0 ? "text-amber-700" : "text-muted-foreground"}`}>clases ya en el 2do sem.</p>
+                    </div>
+                  </div>
+
+                  {copyPreview.existingSegundo > 0 && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
+                      <p className="text-xs text-amber-800">
+                        ⚠️ El 2do semestre de {copyTargetLabel} ya tiene {copyPreview.existingSegundo} clase{copyPreview.existingSegundo !== 1 ? "s" : ""}.
+                        Al confirmar, <strong>se reemplazarán</strong> por la copia nueva del 1er semestre.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Elección explícita: con o sin alumnos */}
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setCopyMode("with-students")}
+                      className={`text-left rounded-xl border-2 px-4 py-3 transition-colors ${
+                        copyMode === "with-students" ? "border-indigo-500 bg-indigo-50/60" : "border-border hover:border-indigo-300"
+                      }`}
+                    >
+                      <p className="text-sm font-bold text-foreground">Copiar clases CON sus alumnos</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Los {copyPreview.students} alumnos quedan inscritos igual que en el 1er semestre.
+                      </p>
+                    </button>
+                    <button
+                      onClick={() => setCopyMode("without-students")}
+                      className={`text-left rounded-xl border-2 px-4 py-3 transition-colors ${
+                        copyMode === "without-students" ? "border-indigo-500 bg-indigo-50/60" : "border-border hover:border-indigo-300"
+                      }`}
+                    >
+                      <p className="text-sm font-bold text-foreground">Copiar solo la estructura</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Las clases parten vacías: la inscripción del 2do semestre comienza de cero.
+                      </p>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleCopySemester}
+                      disabled={copyingSemester}
+                      className="px-4 py-2.5 text-sm font-bold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-60 transition-colors"
+                    >
+                      {copyingSemester
+                        ? "Copiando..."
+                        : copyMode === "with-students"
+                          ? `Copiar ${copyPreview.classes} clases con alumnos`
+                          : `Copiar ${copyPreview.classes} clases vacías`}
+                    </button>
+                    <button
+                      onClick={() => setCopyOpen(false)}
+                      className="px-4 py-2.5 text-sm font-semibold bg-muted text-muted-foreground rounded-xl hover:bg-muted/80 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </>
+              )}
+              {copyError && (
+                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span className="text-sm text-red-700">{copyError}</span>
+                </div>
               )}
             </div>
-          </div>
+          )}
+
           {copyResult && (
             <div className="px-5 pb-4">
               <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-indigo-600 shrink-0" />
                 <span className="text-sm text-indigo-800 font-medium">
-                  {copyResult.created} clases copiadas al 2do semestre
+                  Listo: {copyResult.created} clases copiadas al 2do semestre
+                  {copyResult.copiedStudents > 0 ? ` con ${copyResult.copiedStudents} alumnos` : " (sin alumnos)"}.
                 </span>
               </div>
             </div>
           )}
-          {copyError && (
+          {copyError && !copyOpen && (
             <div className="px-5 pb-4">
               <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />

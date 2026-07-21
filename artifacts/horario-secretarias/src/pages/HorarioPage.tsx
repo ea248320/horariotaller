@@ -1401,14 +1401,22 @@ export default function HorarioPage() {
                   </div>
                   <div>
                     <p className="font-display font-bold text-foreground text-lg">
-                      {activeTab === "SEGUNDO" ? "No hay clases para el 2do Semestre" : "No hay clases para este semestre"}
+                      {activeTab === "SEGUNDO" ? "El 2do semestre aún no tiene clases" : "No hay clases para este semestre"}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1 max-w-sm">
                       {activeTab === "SEGUNDO"
-                        ? "Ve al Panel Admin y usa el botón \"Copiar semestre\" para duplicar las clases del 1er semestre."
+                        ? "Puedes copiar las clases del 1er semestre con un asistente que te muestra exactamente qué se va a copiar."
                         : "Crea clases desde el Panel Admin o importa un archivo Excel."}
                     </p>
                   </div>
+                  {activeTab === "SEGUNDO" && (
+                    <button
+                      onClick={() => setLocation("/admin")}
+                      className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition-colors"
+                    >
+                      Pasar clases al 2do semestre
+                    </button>
+                  )}
                 </div>
               </div>
             ) : (
