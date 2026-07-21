@@ -9,6 +9,11 @@ regla se impone en la base de datos, no en la aplicación.
 1. Entra a tu proyecto en [supabase.com](https://supabase.com) → **SQL Editor**.
 2. Abre `migrations/0001_init.sql`, copia todo su contenido, pégalo y pulsa **Run**.
 3. Repite con `migrations/0002_signup.sql`.
+4. Repite con `migrations/0003_policies_optimizadas.sql` (optimiza las políticas
+   y elimina las advertencias de rendimiento del Security Advisor).
+
+Aplícalas siempre en orden numérico. Cada archivo nuevo (`0004`, `0005`…) es un
+cambio incremental: se ejecuta una vez y queda registrado en tu historial.
 
 Listo: se crean todas las tablas, los índices, las funciones de seguridad y las
 políticas RLS. Puedes verlas en **Table Editor** y **Authentication → Policies**.
