@@ -11,6 +11,11 @@ import ToastContainer from "@/components/ToastContainer";
 import Navbar from "@/components/Navbar";
 import { UserProvider } from "@/context/UserContext";
 import UserSelectionModal from "@/components/UserSelectionModal";
+import { CLOUD_MODE } from "@/lib/supabaseClient";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+
+const CloudLoginPage   = lazy(() => import("@/pages/CloudLoginPage"));
+const CloudWelcome     = lazy(() => import("@/pages/CloudWelcome"));
 
 const HomePage         = lazy(() => import("@/pages/HomePage"));
 const HorarioPage      = lazy(() => import("@/pages/HorarioPage"));
@@ -112,7 +117,34 @@ function Router() {
   );
 }
 
+// Puerta del modo nube: exige iniciar sesión antes de entrar. Mientras
+// construimos la migración completa, tras el login se muestra la pantalla de
+// bienvenida que confirma la conexión. (En modo local no se usa.)
+function CloudGate() {
+  const { session, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  return (
+    <Suspense fallback={<PageLoader />}>
+      {session ? <CloudWelcome /> : <CloudLoginPage />}
+    </Suspense>
+  );
+}
+
 function App() {
+  if (CLOUD_MODE) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <SettingsProvider>
+            <AuthProvider>
+              <CloudGate />
+            </AuthProvider>
+          </SettingsProvider>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
