@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import {
   CalendarDays, Home, Grid3x3, Settings, Menu, X, Printer, Camera,
   Bell, ArrowLeftRight, ClipboardList, HeartHandshake, StickyNote,
-  SlidersHorizontal, RotateCcw, Check,
+  SlidersHorizontal, RotateCcw, Check, ClipboardCheck,
 } from "lucide-react";
 import { useHorario } from "@/context/HorarioContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -18,6 +18,7 @@ import {
 const ICON_MAP: Record<string, React.ElementType> = {
   "/":            Home,
   "/horarios":    Grid3x3,
+  "/asistencia":  ClipboardCheck,
   "/tareas":      ClipboardList,
   "/cambios":     ArrowLeftRight,
   "/notas":       StickyNote,

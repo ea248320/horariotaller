@@ -21,6 +21,7 @@ const CloudOwnerPanel  = lazy(() => import("@/pages/CloudOwnerPanel"));
 
 const HomePage         = lazy(() => import("@/pages/HomePage"));
 const HorarioPage      = lazy(() => import("@/pages/HorarioPage"));
+const AsistenciaPage   = lazy(() => import("@/pages/AsistenciaPage"));
 const AdminPage        = lazy(() => import("@/pages/AdminPage"));
 const GuiasPage        = lazy(() => import("@/pages/GuiasPage"));
 const FotoPage         = lazy(() => import("@/pages/FotoPage"));
@@ -97,6 +98,7 @@ function Router() {
                 <Switch>
                   <Route path="/" component={HomePage} />
                   <Route path="/horarios" component={HorarioPage} />
+                  <ModuleRoute path="/asistencia" component={AsistenciaPage} />
                   <Route path="/admin" component={AdminPage} />
                   <Route path="/backoffice" component={OwnerPage} />
                   <ModuleRoute path="/guias" component={GuiasPage} />

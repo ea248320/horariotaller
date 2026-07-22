@@ -13,6 +13,7 @@ const LS_KEY = "nav_config_v1";
 export const NAV_DEFAULTS: NavItem[] = [
   { href: "/",           label: "Inicio",       visible: true  },
   { href: "/horarios",   label: "Horarios",     visible: true  },
+  { href: "/asistencia", label: "Asistencia",   visible: true  },
   { href: "/tareas",     label: "Tareas",       visible: true  },
   { href: "/cambios",    label: "Cambios",      visible: true  },
   { href: "/notas",      label: "Notas",        visible: true  },
@@ -33,6 +34,7 @@ function loadRaw(): StoredConfig {
 // Módulo (activable por negocio desde /backoffice) al que pertenece cada ruta.
 // Las rutas sin módulo son parte del núcleo y siempre están disponibles.
 export const ROUTE_MODULE: Record<string, string> = {
+  "/asistencia": "asistencia",
   "/tareas": "tareas",
   "/cambios": "cambios",
   "/notas": "notas",
