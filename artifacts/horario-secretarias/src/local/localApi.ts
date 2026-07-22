@@ -276,7 +276,7 @@ route("GET", "/api/healthz", () => json({ status: "ok" }));
 const ALL_DAYS = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
 
 // Módulos activables por negocio desde el backoffice de propietario (/backoffice)
-const MODULE_KEYS = ["asistencia", "tareas", "cambios", "notas", "guias", "foto", "orientacion", "talleres"];
+const MODULE_KEYS = ["tareas", "cambios", "notas", "guias", "foto", "orientacion", "talleres"];
 
 const DEFAULT_SETTINGS = {
   platformName: "Mi Plataforma de Horarios",
@@ -1016,42 +1016,6 @@ route("DELETE", "/api/tasks/:id/items/:itemId", ({ params }) => {
 });
 
 // ─── Rutas: notas (formato snake_case, como el servidor original) ────────────
-
-// ─── Rutas: asistencia (pasar lista) ─────────────────────────────────────────
-// Un registro por (campus, semestre, clase, fecha, alumno) con presente true/false.
-
-route("GET", "/api/asistencia", ({ query }) => {
-  const horario = query.get("horario");
-  const fecha = query.get("fecha");
-  if (!horario || !fecha) return json({ error: "horario y fecha requeridos" }, 400);
-  const rows = load("asistencia").filter(a => a.horario === horario && a.fecha === fecha);
-  return json(rows);
-});
-
-route("POST", "/api/asistencia", ({ body }) => {
-  const { horario, semester, classCode, fecha, studentName, presente } = body ?? {};
-  if (!horario || !classCode || !fecha || !studentName) {
-    return json({ error: "Faltan campos requeridos" }, 400);
-  }
-  const sem = semester === "SEGUNDO" ? "SEGUNDO" : "PRIMER";
-  const rows = load("asistencia");
-  const idx = rows.findIndex(a =>
-    a.horario === horario && a.semester === sem && a.classCode === classCode &&
-    a.fecha === fecha && a.studentName === studentName);
-  if (presente === null || presente === undefined) {
-    // quitar la marca (sin marcar)
-    if (idx >= 0) { rows.splice(idx, 1); save("asistencia", rows); }
-    return json({ ok: true });
-  }
-  const record = {
-    id: idx >= 0 ? rows[idx].id : nextId("asistencia"),
-    horario, semester: sem, classCode, fecha, studentName,
-    presente: !!presente, updatedAt: nowIso(),
-  };
-  if (idx >= 0) rows[idx] = record; else rows.push(record);
-  save("asistencia", rows);
-  return json(record);
-});
 
 route("GET", "/api/notas", ({ query }) => {
   const horarioId = query.get("horarioId");

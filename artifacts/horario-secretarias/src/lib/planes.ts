@@ -10,8 +10,8 @@ export interface PlanInfo {
 }
 
 const NINGUNO = {
-  asistencia: false, tareas: false, cambios: false, guias: false,
-  notas: false, foto: false, orientacion: false, talleres: false,
+  tareas: false, cambios: false, notas: false, guias: false,
+  foto: false, orientacion: false, talleres: false,
 };
 
 export const PLANES: PlanInfo[] = [
@@ -26,14 +26,14 @@ export const PLANES: PlanInfo[] = [
     id: "pro",
     nombre: "Pro",
     precio: "$34.990",
-    modules: { ...NINGUNO, asistencia: true, tareas: true, cambios: true, notas: true, guias: true, foto: true, talleres: true },
+    modules: { ...NINGUNO, tareas: true, cambios: true, notas: true, guias: true, foto: true, talleres: true },
     incluye: ["Todo lo del Básico", "Tareas", "Cambios", "Notas", "Guías", "Fotos", "Talleres"],
   },
   {
     id: "completo",
     nombre: "Completo",
     precio: "$49.990",
-    modules: { asistencia: true, tareas: true, cambios: true, notas: true, guias: true, foto: true, orientacion: true, talleres: true },
+    modules: { tareas: true, cambios: true, notas: true, guias: true, foto: true, orientacion: true, talleres: true },
     incluye: ["Todo lo del Pro", "Orientación (agenda de citas)"],
   },
 ];

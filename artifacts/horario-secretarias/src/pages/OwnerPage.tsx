@@ -3,7 +3,6 @@ import { useLocation } from "wouter";
 import {
   Shield, Lock, CalendarDays, ClipboardList, ArrowLeftRight, StickyNote,
   Printer, Camera, HeartHandshake, GraduationCap, Check, X, Activity, Trash2,
-  ClipboardCheck,
 } from "lucide-react";
 import { getErrorLog, clearErrorLog, type ErrorEntry } from "@/lib/monitor";
 import { useSettings } from "@/context/SettingsContext";
@@ -15,7 +14,6 @@ import { useHorario } from "@/context/HorarioContext";
 // y sus páginas dejan de estar disponibles.
 
 const MODULE_INFO: { key: string; label: string; icon: React.ElementType; description: string }[] = [
-  { key: "asistencia",  label: "Asistencia",  icon: ClipboardCheck,  description: "Pasar lista: marcar presente/ausente por clase, con resumen del día." },
   { key: "tareas",      label: "Tareas",      icon: ClipboardList,   description: "Lista de pendientes del equipo, con checklists y prioridades." },
   { key: "cambios",     label: "Cambios",     icon: ArrowLeftRight,  description: "Registro de cambios de horario de los alumnos." },
   { key: "notas",       label: "Notas",       icon: StickyNote,      description: "Notas rápidas compartidas tipo post-it." },
